@@ -1,5 +1,7 @@
 bin
+Bin
 obj
+Obj
 *.user
 *.suo
 *.bak
