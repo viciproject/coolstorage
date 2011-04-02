@@ -46,7 +46,7 @@ namespace Vici.CoolStorage
 
     public interface ICSDbReader : IDisposable
     {
-#if !WINDOWS_PHONE && !SILVERLIGHT
+#if !WINDOWS_PHONE && !SILVERLIGHT && !MONOTOUCH
         DataTable GetSchemaTable();
 #endif
         int FieldCount { get; }
@@ -458,7 +458,7 @@ namespace Vici.CoolStorage
             }
         }
 
-#if WINDOWS_PHONE || SILVERLIGHT
+#if WINDOWS_PHONE || SILVERLIGHT || MONOTOUCH 
         protected internal abstract CSSchemaColumn[] GetSchemaColumns(string tableName);
 #else
         protected internal virtual CSSchemaColumn[] GetSchemaColumns(string tableName)

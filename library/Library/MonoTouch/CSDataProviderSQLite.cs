@@ -2,7 +2,7 @@
 //=============================================================================
 // Vici CoolStorage - .NET Object Relational Mapping Library 
 //
-// Copyright (c) 2004-2009 Philippe Leybaert
+// Copyright (c) 2004-2011 Philippe Leybaert
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy 
 // of this software and associated documentation files (the "Software"), to deal 
@@ -39,20 +39,18 @@ namespace Vici.CoolStorage
             : base(connectionString)
         {
         }
-
-        protected override IDbConnection CreateConnection()
+        protected override ICSDbConnection CreateConnection()
         {
-			
             SqliteConnection conn = new SqliteConnection(ConnectionString);
 
             conn.Open();
             
-            return conn;
+            return new CSSqliteConnection(conn);
         }
 
         protected override void ClearConnectionPool()
         {
-            SqliteConnection.ClearAllPools();
+            //SqliteConnection.ClearAllPools();
         }
 
         protected internal override CSDataProvider Clone()
@@ -60,20 +58,24 @@ namespace Vici.CoolStorage
             return new CSDataProviderSQLite(ConnectionString);
         }
 
-        protected override IDbCommand CreateCommand(string sqlQuery, CSParameterCollection parameters)
+        protected override ICSDbCommand CreateCommand(string sqlQuery, CSParameterCollection parameters)
         {
-            SqliteCommand sqlCommand = (SqliteCommand) Connection.CreateCommand();
+            SqliteCommand sqlCommand = ((CSSqliteCommand)Connection.CreateCommand()).Command;
 
-            sqlCommand.Transaction = (SqliteTransaction)CurrentTransaction;
+            if (CurrentTransaction != null)
+                sqlCommand.Transaction = ((CSSqliteTransaction)CurrentTransaction).Transaction;
 
-            sqlCommand.CommandType = CommandType.Text;
- 
+            if (sqlQuery.ToUpper().StartsWith("DELETE ") || sqlQuery.ToUpper().StartsWith("SELECT ") || sqlQuery.ToUpper().StartsWith("UPDATE ") || sqlQuery.ToUpper().StartsWith("INSERT ") || sqlQuery.ToUpper().StartsWith("CREATE "))
+                sqlCommand.CommandType = CommandType.Text;
+            else
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+
             sqlCommand.CommandText = Regex.Replace(sqlQuery, @"@(?<name>[a-z0-9A-Z_]+)", "@${name}");
 
             if (parameters != null && !parameters.IsEmpty)
                 foreach (CSParameter parameter in parameters)
                 {
-                    IDbDataParameter dataParameter = sqlCommand.CreateParameter();
+                    SqliteParameter dataParameter = sqlCommand.CreateParameter();
 
                     dataParameter.ParameterName = "@" + parameter.Name.Substring(1);
                     dataParameter.Direction = ParameterDirection.Input;
@@ -82,7 +84,7 @@ namespace Vici.CoolStorage
                     sqlCommand.Parameters.Add(dataParameter);
                 }
 
-            return sqlCommand;
+            return new CSSqliteCommand(sqlCommand);
         }
 
         protected internal override string QuoteField(string fieldName) { return "\"" + fieldName.Replace(".","\".\"") + "\""; }
@@ -98,99 +100,6 @@ namespace Vici.CoolStorage
             }
         }
 
-		protected internal override DataTable GetSchemaTable (string tableName)
-		{
-			DataTable dataTable = new DataTable();
-			
-			dataTable.Columns.Add("IsKey",typeof(bool));
-			dataTable.Columns.Add("AllowDBNull",typeof(bool));
-			dataTable.Columns.Add("ColumnName",typeof(string));
-			dataTable.Columns.Add("DataType",typeof(Type));
-			dataTable.Columns.Add("IsReadOnly",typeof(bool));
-			dataTable.Columns.Add("ColumnSize",typeof(int));
-			dataTable.Columns.Add("IsAutoIncrement",typeof(bool));
-			
-			List<string> autoColumns = new List<string>();
-			
-			using (SqliteCommand cmd = (SqliteCommand) CreateCommand("select sql from sqlite_master where type='table' and name=@tablename",
-			                                                         new CSParameterCollection("@tablename",tableName)))
-			{
-				string sql = (string) cmd.ExecuteScalar();
-			
-				Regex regex = new Regex(@"[\(,]\s*(?<column>[a-z0-9_]+).*?AUTOINCREMENT",RegexOptions.IgnoreCase);
-				
-				Match m = regex.Match(sql);
-				
-				if (m.Success)
-				{
-					autoColumns.Add(m.Groups["column"].Value.ToUpper());
-				}
-
-			}
-
-			
-			using (SqliteCommand cmd = (SqliteCommand) CreateCommand("pragma table_info (" + tableName + ")",null))
-			{
-				using (SqliteDataReader reader = cmd.ExecuteReader()) 
-				{
-					while(reader.Read())
-					{
-						DataRow row = dataTable.NewRow();
-
-						string columnName = (string) reader["name"];
-						
-						row["IsKey"] = reader["pk"].Convert<bool>();
-						row["AllowDBNull"] = !reader["notnull"].Convert<bool>();
-						row["ColumnName"] = columnName;
-						row["IsReadOnly"] = false;
-						row["ColumnSize"] = 1000;
-						
-						
-						Type dataType = null;
-						
-						string dbType = (string) reader["type"];
-						
-						int paren = dbType.IndexOf('(');
-						
-						if (paren > 0)
-							dbType = dbType.Substring(0,paren);
-						
-						dbType = dbType.ToUpper();
-						
-						switch (dbType) 
-						{
-						case "TEXT": dataType = typeof(string); break;
-						case "VARCHAR": dataType = typeof(string); break;
-						case "INTEGER": dataType = typeof(int); break;
-						case "BOOL": dataType = typeof(bool); break;
-						case "DOUBLE": dataType = typeof(double); break;
-						case "FLOAT": dataType = typeof(double); break;
-						case "REAL": dataType = typeof(double); break;
-						case "CHAR": dataType = typeof(string); break;
-						case "BLOB": dataType = typeof(byte[]); break;
-						case "NUMERIC": dataType = typeof(decimal); break;
-						case "DATETIME": dataType = typeof(DateTime); break;
-						
-						}
-
-						row["DataType"] = dataType;
-						
-						row["IsAutoIncrement"] = autoColumns.Contains(columnName.ToUpper());
-							
-							
-						dataTable.Rows.Add(row);
-					}
-				}
-			}
-			
-			
-
-			
-			return dataTable;
-			
-		}
-
-		
         protected internal override string BuildSelectSQL(string tableName, string tableAlias, string[] columnList, string[] columnAliasList, string[] joinList, string whereClause, string orderBy, int startRow, int maxRows, bool quoteColumns, bool unOrdered)
         {
             string sql = "select";
@@ -274,5 +183,258 @@ namespace Vici.CoolStorage
         {
             get { return false; }
         }
+
+
+        protected internal override CSSchemaColumn[] GetSchemaColumns(string tableName)
+        {
+            List<string> autoColumns = new List<string>();
+
+            using (
+                CSSqliteCommand cmd = (CSSqliteCommand) CreateCommand("select sql from sqlite_master where type='table' and name=@tablename", new CSParameterCollection("@tablename", tableName)))
+            {
+                string sql = (string) cmd.Command.ExecuteScalar();
+
+                Regex regex = new Regex(@"[\(,]\s*(?<column>[a-z0-9_]+).*?AUTOINCREMENT", RegexOptions.IgnoreCase);
+
+                Match m = regex.Match(sql);
+
+                if (m.Success)
+                {
+                    autoColumns.Add(m.Groups["column"].Value.ToUpper());
+                }
+
+            }
+
+            List<CSSchemaColumn> columns = new List<CSSchemaColumn>();
+
+            using (CSSqliteCommand cmd = (CSSqliteCommand) CreateCommand("pragma table_info (" + tableName + ")", null))
+            {
+                using (CSSqliteReader reader = (CSSqliteReader) cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        CSSchemaColumn column = new CSSchemaColumn();
+
+                        string columnName = (string) reader.Reader["name"];
+
+                        column.Name = columnName;
+                        column.IsKey = reader.Reader["pk"].Convert<bool>();
+                        column.AllowNull = !reader.Reader["notnull"].Convert<bool>();
+                        column.ReadOnly = false;
+                        column.Size = 1000;
+
+                        Type dataType = null;
+
+                        string dbType = (string) reader.Reader["type"];
+
+                        int paren = dbType.IndexOf('(');
+
+                        if (paren > 0)
+                            dbType = dbType.Substring(0, paren);
+
+                        dbType = dbType.ToUpper();
+
+                        switch (dbType)
+                        {
+                            case "TEXT":
+                                dataType = typeof (string);
+                                break;
+                            case "VARCHAR":
+                                dataType = typeof (string);
+                                break;
+                            case "INTEGER":
+                                dataType = typeof (int);
+                                break;
+                            case "BOOL":
+                                dataType = typeof (bool);
+                                break;
+                            case "DOUBLE":
+                                dataType = typeof (double);
+                                break;
+                            case "FLOAT":
+                                dataType = typeof (double);
+                                break;
+                            case "REAL":
+                                dataType = typeof (double);
+                                break;
+                            case "CHAR":
+                                dataType = typeof (string);
+                                break;
+                            case "BLOB":
+                                dataType = typeof (byte[]);
+                                break;
+                            case "NUMERIC":
+                                dataType = typeof (decimal);
+                                break;
+                            case "DATETIME":
+                                dataType = typeof (DateTime);
+                                break;
+
+                        }
+
+                        column.DataType = dataType;
+                        column.Identity = autoColumns.Contains(columnName.ToUpper());
+
+                        columns.Add(column);
+                    }
+                }
+
+                return columns.ToArray();
+
+            }
+        }
+		
+		        private class CSSqliteConnection : ICSDbConnection
+        {
+            public SqliteConnection Connection;
+
+            public CSSqliteConnection(SqliteConnection connection)
+            {
+                Connection = connection;
+            }
+
+            public void Close()
+            {
+                Connection.Close();
+            }
+
+            public bool IsOpenAndReady()
+            {
+                return Connection.State == ConnectionState.Open;
+            }
+
+            public bool IsClosed()
+            {
+                return Connection.State == ConnectionState.Closed;
+            }
+
+            public ICSDbTransaction BeginTransaction(IsolationLevel isolationLevel)
+            {
+                return new CSSqliteTransaction(Connection.BeginTransaction());
+            }
+
+            public ICSDbTransaction BeginTransaction()
+            {
+                return new CSSqliteTransaction(Connection.BeginTransaction());
+            }
+
+            public ICSDbCommand CreateCommand()
+            {
+                return new CSSqliteCommand(Connection.CreateCommand());
+            }
+
+            public void Dispose()
+            {
+                Connection.Dispose();
+            }
+        }
+
+        private class CSSqliteCommand : ICSDbCommand
+        {
+            public SqliteCommand Command;
+
+            public CSSqliteCommand(SqliteCommand command)
+            {
+                Command = command;
+            }
+
+            public string CommandText
+            {
+                get { return Command.CommandText; }
+                set { Command.CommandText = value; }
+            }
+
+            public int CommandTimeout
+            {
+                get { return Command.CommandTimeout; }
+                set { Command.CommandTimeout = value; }
+            }
+
+            public ICSDbReader ExecuteReader(CommandBehavior commandBehavior)
+            {
+                return new CSSqliteReader(Command.ExecuteReader(commandBehavior));
+            }
+
+            public ICSDbReader ExecuteReader()
+            {
+                return new CSSqliteReader(Command.ExecuteReader());
+            }
+
+            public int ExecuteNonQuery()
+            {
+                return Command.ExecuteNonQuery();
+            }
+
+            public void Dispose()
+            {
+                Command.Dispose();
+            }
+        }
+
+        private class CSSqliteTransaction : ICSDbTransaction
+        {
+            public SqliteTransaction Transaction;
+
+            public CSSqliteTransaction(SqliteTransaction transaction)
+            {
+                Transaction = transaction;
+            }
+
+            public void Dispose()
+            {
+                //Transaction.Dispose();
+            }
+
+            public void Commit()
+            {
+                Transaction.Commit();
+            }
+
+            public void Rollback()
+            {
+                Transaction.Rollback();
+            }
+        }
+
+        public class CSSqliteReader : ICSDbReader
+        {
+            public SqliteDataReader Reader;
+
+            public CSSqliteReader(SqliteDataReader reader)
+            {
+                Reader = reader;
+            }
+
+            public void Dispose()
+            {
+                Reader.Dispose();
+            }
+
+            public int FieldCount
+            {
+                get { return Reader.FieldCount; }
+            }
+
+            public string GetName(int i)
+            {
+                return Reader.GetName(i);
+            }
+
+            public bool Read()
+            {
+                return Reader.Read();
+            }
+
+            public bool IsClosed
+            {
+                get { return Reader.IsClosed; }
+            }
+
+            public object this[int i]
+            {
+                get { return Reader[i]; }
+            }
+        }
+
     }
 }
