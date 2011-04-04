@@ -25,6 +25,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Text;
@@ -86,6 +87,52 @@ namespace Vici.CoolStorage
         protected internal override bool SupportsNestedTransactions
         {
             get { return false; }
+        }
+
+        protected internal override CSSchemaColumn[] GetSchemaColumns(string tableName)
+        {
+            using (ICSDbConnection newConn = CreateConnection())
+            {
+                ICSDbCommand dbCommand = newConn.CreateCommand();
+
+                dbCommand.CommandText = "select * from " + QuoteTable(tableName);
+
+                using (CSAccessReader dataReader = (CSAccessReader)dbCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo))
+                {
+                    List<CSSchemaColumn> columns = new List<CSSchemaColumn>();
+
+                    DataTable schemaTable = dataReader.Reader.GetSchemaTable();
+
+                    bool hasHidden = schemaTable.Columns.Contains("IsHidden");
+                    bool hasIdentity = schemaTable.Columns.Contains("IsIdentity");
+                    bool hasAutoincrement = schemaTable.Columns.Contains("IsAutoIncrement");
+
+                    foreach (DataRow schemaRow in schemaTable.Rows)
+                    {
+                        CSSchemaColumn schemaColumn = new CSSchemaColumn();
+
+                        if (hasHidden && !schemaRow.IsNull("IsHidden") && (bool)schemaRow["IsHidden"])
+                            schemaColumn.Hidden = true;
+
+                        schemaColumn.IsKey = (bool)schemaRow["IsKey"];
+                        schemaColumn.AllowNull = (bool)schemaRow["AllowDBNull"];
+                        schemaColumn.Name = (string)schemaRow["ColumnName"];
+                        schemaColumn.ReadOnly = (bool)schemaRow["IsReadOnly"];
+                        schemaColumn.DataType = (Type)schemaRow["DataType"];
+                        schemaColumn.Size = (int)schemaRow["ColumnSize"];
+
+                        if (hasAutoincrement && !schemaRow.IsNull("IsAutoIncrement") && (bool)schemaRow["IsAutoIncrement"])
+                            schemaColumn.Identity = true;
+
+                        if (hasIdentity && !schemaRow.IsNull("IsIdentity") && (bool)schemaRow["IsIdentity"])
+                            schemaColumn.Identity = true;
+
+                        columns.Add(schemaColumn);
+                    }
+
+                    return columns.ToArray();
+                }
+            }
         }
 
         protected internal override string BuildGetKeys(string tableName, string[] columnList, string[] valueList, string[] primaryKeys, string identityField)

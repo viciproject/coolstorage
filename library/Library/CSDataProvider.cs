@@ -46,9 +46,6 @@ namespace Vici.CoolStorage
 
     public interface ICSDbReader : IDisposable
     {
-#if !WINDOWS_PHONE && !SILVERLIGHT && !MONOTOUCH
-        DataTable GetSchemaTable();
-#endif
         int FieldCount { get; }
         bool IsClosed { get; }
         string GetName(int i);
@@ -458,55 +455,7 @@ namespace Vici.CoolStorage
             }
         }
 
-#if WINDOWS_PHONE || SILVERLIGHT || MONOTOUCH 
         protected internal abstract CSSchemaColumn[] GetSchemaColumns(string tableName);
-#else
-        protected internal virtual CSSchemaColumn[] GetSchemaColumns(string tableName)
-        {
-            using (ICSDbConnection newConn = CreateConnection())
-            {
-                ICSDbCommand dbCommand = newConn.CreateCommand();
-
-                dbCommand.CommandText = "select * from " + QuoteTable(tableName);
-
-                using (ICSDbReader dataReader = dbCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo))
-                {
-                    List<CSSchemaColumn> columns = new List<CSSchemaColumn>();
-
-                    DataTable schemaTable = dataReader.GetSchemaTable();
-
-                    bool hasHidden = schemaTable.Columns.Contains("IsHidden");
-                    bool hasIdentity = schemaTable.Columns.Contains("IsIdentity");
-                    bool hasAutoincrement = schemaTable.Columns.Contains("IsAutoIncrement");
-
-                    foreach (DataRow schemaRow in schemaTable.Rows)
-                    {
-                        CSSchemaColumn schemaColumn = new CSSchemaColumn();
-
-                        if (hasHidden && !schemaRow.IsNull("IsHidden") && (bool)schemaRow["IsHidden"])
-                            schemaColumn.Hidden = true;
-
-                        schemaColumn.IsKey = (bool)schemaRow["IsKey"];
-                        schemaColumn.AllowNull = (bool)schemaRow["AllowDBNull"];
-                        schemaColumn.Name = (string)schemaRow["ColumnName"];
-                        schemaColumn.ReadOnly = (bool)schemaRow["IsReadOnly"];
-                        schemaColumn.DataType = (Type)schemaRow["DataType"];
-                        schemaColumn.Size = (int)schemaRow["ColumnSize"];
-
-                        if (hasAutoincrement && !schemaRow.IsNull("IsAutoIncrement") && (bool)schemaRow["IsAutoIncrement"])
-                            schemaColumn.Identity = true;
-
-                        if (hasIdentity && !schemaRow.IsNull("IsIdentity") && (bool)schemaRow["IsIdentity"])
-                            schemaColumn.Identity = true;
-
-                        columns.Add(schemaColumn);
-                    }
-
-                    return columns.ToArray();
-                }
-            }
-        }
-#endif
 
         private static readonly object _logLock = new object();
         private static long _lastLogId;
