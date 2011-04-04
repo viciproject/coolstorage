@@ -190,7 +190,7 @@ namespace Vici.CoolStorage
 
         private class CSAccessConnection : ICSDbConnection
         {
-            public OleDbConnection Connection;
+            public readonly OleDbConnection Connection;
 
             public CSAccessConnection(OleDbConnection connection)
             {
@@ -235,7 +235,7 @@ namespace Vici.CoolStorage
 
         private class CSAccessCommand : ICSDbCommand
         {
-            public OleDbCommand Command;
+            public readonly OleDbCommand Command;
 
             public CSAccessCommand(OleDbCommand command)
             {
@@ -277,7 +277,7 @@ namespace Vici.CoolStorage
 
         private class CSAccessTransaction : ICSDbTransaction
         {
-            public OleDbTransaction Transaction;
+            public readonly OleDbTransaction Transaction;
 
             public CSAccessTransaction(OleDbTransaction transaction)
             {
@@ -300,9 +300,9 @@ namespace Vici.CoolStorage
             }
         }
 
-        public class CSAccessReader : ICSDbReader
+        private class CSAccessReader : ICSDbReader
         {
-            public OleDbDataReader Reader;
+            public readonly OleDbDataReader Reader;
 
             public CSAccessReader(OleDbDataReader reader)
             {

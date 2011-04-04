@@ -83,8 +83,6 @@ namespace Vici.CoolStorage
                 sqlCommand.CommandText = sqlQuery;
             }
 
-
-
 			if (parameters != null && !parameters.IsEmpty)
 				foreach (CSParameter csParameter in parameters)
 				{
@@ -100,44 +98,6 @@ namespace Vici.CoolStorage
 			return new CSSqlCommand(sqlCommand);
 		}
 
-        // Don't throw away yet, might be needed when implementing paging for SQL Server 2000
-        /*
-        private string ReverseOrderBy(string orderBy)
-        {
-            string orderByReverse = "";
-
-            string[] sortByFields = (orderBy ?? "").Split(',');
-
-            foreach (string sortBy in sortByFields)
-            {
-                string s = sortBy.Trim();
-
-                if (s.Length < 1)
-                    continue;
-
-                if (orderByReverse.Length > 0)
-                    orderByReverse += ",";
-
-                if (s.EndsWith(" DESC", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    s = s.Substring(0, s.Length - 5).Trim();
-
-                    orderByReverse += s + " ASC";
-                }
-                else
-                {
-                    if (s.EndsWith(" ASC", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        s = s.Substring(0, s.Length - 4).Trim();
-                    }
-
-                    orderByReverse += s + " DESC";
-                }
-            }
-
-            return orderByReverse;
-        }
-        */
 	    protected internal override string BuildSelectSQL(string tableName, string tableAlias, string[] columnList, string[] columnAliasList, string[] joinList, string whereClause, string orderBy, int startRow, int maxRows, bool quoteColumns, bool unOrdered)
 	    {
 	        string sqlColumns;
@@ -212,50 +172,27 @@ namespace Vici.CoolStorage
         {
             string sql;
 
-//            if (_serverVersion >= 9 && primaryKeys != null && primaryKeys.Length > 0)
-//            {
-//                List<string> outputFields = new List<string>();
-//
-//                foreach (string s in primaryKeys)
-//                    outputFields.Add("inserted." + s);
-//
-//                if (columnList.Length > 0)
-//                {
-//                    sql = String.Format("insert into {0} ({1}) output {3} values ({2})",
-//                                        QuoteTable(tableName),
-//                                        String.Join(",", QuoteFieldList(columnList)),
-//                                        String.Join(",", valueList),
-//                                        String.Join(",", QuoteFieldList(outputFields.ToArray()))
-//                                       );
-//                }
-//                else
-//                {
-//                    sql = String.Format("insert into {0} output {1} default values", QuoteTable(tableName),String.Join(",", QuoteFieldList(outputFields.ToArray())));
-//                }
-//            }
-//            else
+            if (columnList.Length > 0)
             {
-                if (columnList.Length > 0)
-                {
-                    sql = String.Format("insert into {0} ({1}) values ({2})",
-                                        QuoteTable(tableName),
-                                        String.Join(",", QuoteFieldList(columnList)),
-                                        String.Join(",", valueList)
-                                        );
-                }
-                else
-                {
-                    sql = String.Format("insert into {0} default values",QuoteTable(tableName));
-                }
-
-                if (primaryKeys != null && primaryKeys.Length > 0 && identityField != null)
-                    sql += String.Format(";SELECT {0} from {1} where {2} = SCOPE_IDENTITY()", String.Join(",",QuoteFieldList(primaryKeys)),QuoteTable(tableName),identityField);
+                sql = String.Format("insert into {0} ({1}) values ({2})",
+                                    QuoteTable(tableName),
+                                    String.Join(",", QuoteFieldList(columnList)),
+                                    String.Join(",", valueList)
+                    );
             }
+            else
+            {
+                sql = String.Format("insert into {0} default values", QuoteTable(tableName));
+            }
+
+            if (primaryKeys != null && primaryKeys.Length > 0 && identityField != null)
+                sql += String.Format(";SELECT {0} from {1} where {2} = SCOPE_IDENTITY()",
+                                     String.Join(",", QuoteFieldList(primaryKeys)), QuoteTable(tableName), identityField);
 
             return sql;
         }
 
-		protected internal override string QuoteField(string fieldName) 
+	    protected internal override string QuoteField(string fieldName) 
 		{
 			int dotIdx = fieldName.IndexOf('.');
 
@@ -297,7 +234,7 @@ namespace Vici.CoolStorage
 
         private class CSSqlConnection : ICSDbConnection
         {
-            public SqlConnection Connection;
+            public readonly SqlConnection Connection;
 
             public CSSqlConnection(SqlConnection connection)
             {
@@ -342,7 +279,7 @@ namespace Vici.CoolStorage
 
         private class CSSqlCommand : ICSDbCommand
         {
-            public SqlCommand Command;
+            public readonly SqlCommand Command;
 
             public CSSqlCommand(SqlCommand command)
             {
@@ -384,7 +321,7 @@ namespace Vici.CoolStorage
 
         private class CSSqlTransaction : ICSDbTransaction
         {
-            public SqlTransaction Transaction;
+            public readonly SqlTransaction Transaction;
 
             public CSSqlTransaction(SqlTransaction transaction)
             {
@@ -407,9 +344,9 @@ namespace Vici.CoolStorage
             }
         }
 
-        public class CSSqlReader : ICSDbReader
+        private class CSSqlReader : ICSDbReader
         {
-            public SqlDataReader Reader;
+            public readonly SqlDataReader Reader;
 
             public CSSqlReader(SqlDataReader reader)
             {
