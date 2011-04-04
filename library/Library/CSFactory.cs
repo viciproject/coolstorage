@@ -43,13 +43,11 @@ namespace Vici.CoolStorage
 
 		private static readonly Dictionary<Type,OpCode> _opCodeMap;
 	    private static readonly Dictionary<Type, Type> _classMap;
-	    //private static readonly Dictionary<string, Assembly> _assemblyMap;
 
 		static CSFactory()
 		{
             _opCodeMap = new Dictionary<Type, OpCode>();
             _classMap = new Dictionary<Type, Type>();
-	        //_assemblyMap = new Dictionary<string, Assembly>();
 
 			_opCodeMap[typeof(Byte)] = OpCodes.Ldind_U1;
 			_opCodeMap[typeof(Char)] = OpCodes.Ldind_I1;
@@ -61,18 +59,8 @@ namespace Vici.CoolStorage
 			_opCodeMap[typeof(UInt64)] = OpCodes.Ldind_I8;
 			_opCodeMap[typeof(Single)] = OpCodes.Ldind_R4;
 			_opCodeMap[typeof(Double)] = OpCodes.Ldind_R8;
-
-            // Causes problems in partial trust
-            //Thread.GetDomain().AssemblyResolve += CSFactory_AssemblyResolve;
 		}
 
-//        private static Assembly CSFactory_AssemblyResolve(object sender, ResolveEventArgs args)
-//        {
-//            if (_assemblyMap.ContainsKey(args.Name))
-//                return _assemblyMap[args.Name];
-//            else
-//                return null;
-//        }
 
         private static Type GetObjectType(Type baseType)
         {
@@ -87,7 +75,6 @@ namespace Vici.CoolStorage
 						type = CreateObjectClass(baseType);
 
 						_classMap.Add(baseType , type);
-                        //_assemblyMap.Add(type.Assembly.FullName,type.Assembly);
 					}
 				}
 			}
