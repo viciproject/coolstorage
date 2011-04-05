@@ -187,6 +187,11 @@ namespace Vici.CoolStorage
             AddFilterOr(new CSFilter(filterExpression));
         }
 
+        public void AddFilter(string filterExpression, object parameters)
+        {
+            AddFilter(new CSFilter(filterExpression, new CSParameterCollection(parameters)));
+        }
+
         public void AddFilter(string filterExpression, CSParameterCollection parameters)
         {
             AddFilter(new CSFilter(filterExpression, parameters));
@@ -195,6 +200,11 @@ namespace Vici.CoolStorage
         public void AddFilter(string filterExpression, string paramName, object paramValue)
         {
             AddFilter(new CSFilter(filterExpression, paramName, paramValue));
+        }
+
+        public void AddFilterOr(string filterExpression, object parameters)
+        {
+            AddFilterOr(new CSFilter(filterExpression, new CSParameterCollection(parameters)));
         }
 
         public void AddFilterOr(string filterExpression, CSParameterCollection parameters)

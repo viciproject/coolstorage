@@ -27,6 +27,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.Serialization;
 
 namespace Vici.CoolStorage
@@ -53,6 +54,25 @@ namespace Vici.CoolStorage
 		public CSParameterCollection()
 		{
 		}
+
+        public CSParameterCollection(object o)
+        {
+            var members = o.GetType().GetMembers(BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Instance);
+
+            foreach (var member in members)
+            {
+                object value;
+
+                if (member is FieldInfo)
+                    value = ((FieldInfo)member).GetValue(o);
+                else if (member is PropertyInfo)
+                    value = ((PropertyInfo)member).GetValue(o, null);
+                else
+                    continue;
+
+                Add(member.Name, value);
+            }
+        }
 
 		public CSParameterCollection(string paramName,object paramValue)
 		{

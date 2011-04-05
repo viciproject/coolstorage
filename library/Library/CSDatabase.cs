@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Reflection;
 
 using Vici.Core;
@@ -76,6 +75,11 @@ namespace Vici.CoolStorage
                 return DB.ExecuteNonQuery(sql, parameters);
         }
 
+        public int ExecuteNonQuery(string sql, object parameters)
+        {
+            return ExecuteNonQuery(sql, new CSParameterCollection(parameters));
+        }
+
         public int ExecuteNonQuery(string sql, params CSParameter[] parameters)
         {
             return ExecuteNonQuery(sql, new CSParameterCollection(parameters));
@@ -99,6 +103,11 @@ namespace Vici.CoolStorage
         public object GetScalar(string sql, string paramName1, object paramValue1, string paramName2, object paramValue2, string paramName3, object paramValue3)
         {
             return GetScalar(sql, new CSParameterCollection(paramName1, paramValue1, paramName2, paramValue2, paramName3, paramValue3));
+        }
+
+        public object GetScalar(string sql, object parameters)
+        {
+            return GetScalar(sql, new CSParameterCollection(parameters));
         }
 
         public object GetScalar(string sql, params CSParameter[] parameters)
@@ -130,6 +139,11 @@ namespace Vici.CoolStorage
         public T[] GetScalarList<T>(string sql, string paramName1, object paramValue1, string paramName2, object paramValue2, string paramName3, object paramValue3)
         {
             return GetScalarList<T>(sql, new CSParameterCollection(paramName1, paramValue1, paramName2, paramValue2, paramName3, paramValue3));
+        }
+
+        public T[] GetScalarList<T>(string sql, object parameters)
+        {
+            return GetScalarList<T>(sql, new CSParameterCollection(parameters));
         }
 
         public T[] GetScalarList<T>(string sql, params CSParameter[] parameters)
@@ -180,6 +194,11 @@ namespace Vici.CoolStorage
             return GetScalar<T>(sql, new CSParameterCollection(parameters));
         }
 
+        public T GetScalar<T>(string sql, object parameters)
+        {
+            return GetScalar<T>(sql, new CSParameterCollection(parameters));
+        }
+
         public T GetScalar<T>(string sql, CSParameterCollection parameters)
         {
             return GetScalar(sql, parameters).Convert<T>();
@@ -206,6 +225,11 @@ namespace Vici.CoolStorage
         }
 
         public CSGenericRecordList RunQuery(string sql, params CSParameter[] parameters)
+        {
+            return RunQuery(sql, new CSParameterCollection(parameters));
+        }
+
+        public CSGenericRecordList RunQuery(string sql, object parameters)
         {
             return RunQuery(sql, new CSParameterCollection(parameters));
         }
@@ -260,6 +284,11 @@ namespace Vici.CoolStorage
             return RunSingleQuery(sql, new CSParameterCollection(parameters));
         }
 
+        public CSGenericRecord RunSingleQuery(string sql,object parameters)
+        {
+            return RunSingleQuery(sql, new CSParameterCollection(parameters));
+        }
+
         public CSGenericRecord RunSingleQuery(string sql, CSParameterCollection parameters)
         {
             CSGenericRecord rec = new CSGenericRecord();
@@ -283,7 +312,6 @@ namespace Vici.CoolStorage
             return null;
         }
 
-
         public T[] RunQuery<T>(string sql) where T : new()
         {
             return RunQuery<T>(sql, null, 0);
@@ -292,6 +320,11 @@ namespace Vici.CoolStorage
         public T[] RunQuery<T>(string sql, CSParameterCollection parameters) where T : new()
         {
             return RunQuery<T>(sql, parameters, 0);
+        }
+
+        public T[] RunQuery<T>(string sql, object parameters) where T : new()
+        {
+            return RunQuery<T>(sql, new CSParameterCollection(parameters), 0);
         }
 
         public T[] RunQuery<T>(string sql, string paramName, object paramValue) where T : new()
@@ -311,59 +344,42 @@ namespace Vici.CoolStorage
 
         public T[] RunQuery<T>() where T : new()
         {
-            return RunQuery<T>(CSHelper.GetQueryExpression<T>(), null, 0);
+            return RunQuery<T>(null, null, 0);
+        }
+
+        public T[] RunQuery<T>(object parameters) where T : new()
+        {
+            return RunQuery<T>(null, new CSParameterCollection(parameters), 0);
         }
 
         public T[] RunQuery<T>(CSParameterCollection parameters) where T : new()
         {
-            return RunQuery<T>(CSHelper.GetQueryExpression<T>(), parameters, 0);
-        }
-
-        public T[] RunQuery<T>(string paramName, object paramValue) where T : new()
-        {
-            return RunQuery<T>(CSHelper.GetQueryExpression<T>(), new CSParameterCollection(paramName, paramValue), 0);
-        }
-
-        public T[] RunQuery<T>(string paramName1, object paramValue1, string paramName2, object paramValue2) where T : new()
-        {
-            return RunQuery<T>(CSHelper.GetQueryExpression<T>(), new CSParameterCollection(paramName1, paramValue1, paramName2, paramValue2), 0);
-        }
-
-        public T[] RunQuery<T>(string paramName1, object paramValue1, string paramName2, object paramValue2, string paramName3, object paramValue3) where T : new()
-        {
-            return RunQuery<T>(CSHelper.GetQueryExpression<T>(), new CSParameterCollection(paramName1, paramValue1, paramName2, paramValue2, paramName3, paramValue3), 0);
+            return RunQuery<T>(null, parameters, 0);
         }
 
         public T RunSingleQuery<T>() where T : class, new()
         {
-            return RunSingleQuery<T>(CSParameterCollection.Empty);
+            return RunSingleQuery<T>((string)null);
         }
 
         public T RunSingleQuery<T>(CSParameterCollection parameters) where T : class, new()
         {
-            T[] objects = RunQuery<T>(CSHelper.GetQueryExpression<T>(), parameters, 1);
-
-            return (objects.Length > 0) ? objects[0] : null;
+            return RunSingleQuery<T>(null, parameters);
         }
 
-        public T RunSingleQuery<T>(string paramName, object paramValue) where T : class, new()
+        public T RunSingleQuery<T>(object parameters) where T : class, new()
         {
-            return RunSingleQuery<T>(new CSParameterCollection(paramName, paramValue));
-        }
-
-        public T RunSingleQuery<T>(string paramName1, object paramValue1, string paramName2, object paramValue2) where T : class, new()
-        {
-            return RunSingleQuery<T>(new CSParameterCollection(paramName1, paramValue1, paramName2, paramValue2));
-        }
-
-        public T RunSingleQuery<T>(string paramName1, object paramValue1, string paramName2, object paramValue2, string paramName3, object paramValue3) where T : class, new()
-        {
-            return RunSingleQuery<T>(new CSParameterCollection(paramName1, paramValue1, paramName2, paramValue2, paramName3, paramValue3));
+            return RunSingleQuery<T>(null, parameters);
         }
 
         public T RunSingleQuery<T>(string sql) where T : class, new()
         {
             return RunSingleQuery<T>(sql, null);
+        }
+
+        public T RunSingleQuery<T>(string sql, object parameters) where T : class, new()
+        {
+            return RunSingleQuery<T>(sql, new CSParameterCollection(parameters));
         }
 
         public T RunSingleQuery<T>(string sql, CSParameterCollection parameters) where T : class, new()
@@ -399,7 +415,7 @@ namespace Vici.CoolStorage
 
             using (new CSTransaction(DB))
             {
-                using (ICSDbReader reader = DB.CreateReader(sql, parameters))
+                using (ICSDbReader reader = DB.CreateReader(sql ?? CSHelper.GetQueryExpression<T>(), parameters))
                 {
                     int rowNum = 0;
 
@@ -498,6 +514,11 @@ namespace Vici.CoolStorage
 			return Context.Default.ExecuteNonQuery(sql, parameters);
 		}
 
+        public static int ExecuteNonQuery(string sql, object parameters)
+        {
+            return Context.Default.ExecuteNonQuery(sql, parameters);
+        }
+
         public static object GetScalar(string sql)
         {
             return Context.Default.GetScalar(sql);
@@ -522,6 +543,11 @@ namespace Vici.CoolStorage
 		{
             return Context.Default.GetScalar(sql, parameters);
 		}
+
+        public static object GetScalar(string sql, object parameters)
+        {
+            return Context.Default.GetScalar(sql, parameters);
+        }
 
 		public static object GetScalar(string sql, CSParameterCollection parameters)
 		{
@@ -553,6 +579,11 @@ namespace Vici.CoolStorage
             return Context.Default.GetScalar<T>(sql, parameters);
 		}
 
+        public static T GetScalar<T>(string sql, object parameters)
+        {
+            return Context.Default.GetScalar<T>(sql, parameters);
+        }
+
 		public static T GetScalar<T>(string sql, CSParameterCollection parameters)
 		{
             return Context.Default.GetScalar<T>(sql, parameters);
@@ -583,11 +614,15 @@ namespace Vici.CoolStorage
             return Context.Default.GetScalarList<T>(sql, parameters);
         }
 
-        public static T[] GetScalarList<T>(string sql, CSParameterCollection parameters)
+        public static T[] GetScalarList<T>(string sql, object parameters)
         {
             return Context.Default.GetScalarList<T>(sql, parameters);
         }
 
+        public static T[] GetScalarList<T>(string sql, CSParameterCollection parameters)
+        {
+            return Context.Default.GetScalarList<T>(sql, parameters);
+        }
 
         public static CSGenericRecordList RunQuery(string sql)
 		{
@@ -619,6 +654,11 @@ namespace Vici.CoolStorage
             return Context.Default.RunQuery(sql, parameters);
         }
 
+        public static CSGenericRecordList RunQuery(string sql, object parameters)
+        {
+            return Context.Default.RunQuery(sql, parameters);
+        }
+
 		public static T[] RunQuery<T>(string sql) where T : new()
 		{
             return Context.Default.RunQuery<T>(sql);
@@ -628,6 +668,11 @@ namespace Vici.CoolStorage
 		{
             return Context.Default.RunQuery<T>(sql, parameters);
 		}
+
+        public static T[] RunQuery<T>(string sql, object parameters) where T : new()
+        {
+            return Context.Default.RunQuery<T>(sql, parameters);
+        }
 
 		public static T[] RunQuery<T>(string sql, string paramName, object paramValue) where T : new()
 		{
@@ -654,20 +699,10 @@ namespace Vici.CoolStorage
             return Context.Default.RunQuery<T>(parameters);
 		}
 
-		public static T[] RunQuery<T>(string paramName, object paramValue) where T:new()
-		{
-		    return Context.Default.RunQuery<T>(paramName, paramValue);
-		}
-
-		public static T[] RunQuery<T>(string paramName1, object paramValue1, string paramName2, object paramValue2) where T : new()
-		{
-		    return Context.Default.RunQuery<T>(paramName1, paramValue1, paramName2, paramValue2);
-		}
-
-		public static T[] RunQuery<T>(string paramName1, object paramValue1, string paramName2, object paramValue2, string paramName3, object paramValue3) where T : new()
-		{
-		    return Context.Default.RunQuery<T>(paramName1, paramValue1, paramName2, paramValue2, paramName3, paramValue3);
-		}
+        public static T[] RunQuery<T>(object parameters) where T : new()
+        {
+            return Context.Default.RunQuery<T>(parameters);
+        }
 
 		public static T RunSingleQuery<T>() where T : class, new()
 		{
@@ -679,20 +714,10 @@ namespace Vici.CoolStorage
 		    return Context.Default.RunSingleQuery<T>(parameters);
 		}
 
-		public static T RunSingleQuery<T>(string paramName, object paramValue) where T:class,new()
-		{
-            return Context.Default.RunSingleQuery<T>(paramName, paramValue);
-		}
-
-		public static T RunSingleQuery<T>(string paramName1, object paramValue1, string paramName2, object paramValue2) where T : class, new()
-		{
-            return Context.Default.RunSingleQuery<T>(paramName1, paramValue1, paramName2, paramValue2);
-		}
-
-		public static T RunSingleQuery<T>(string paramName1, object paramValue1, string paramName2, object paramValue2, string paramName3, object paramValue3) where T : class, new()
-		{
-            return Context.Default.RunSingleQuery<T>(paramName1, paramValue1, paramName2, paramValue2, paramName3, paramValue3);
-		}
+        public static T RunSingleQuery<T>(object parameters) where T : class, new()
+        {
+            return Context.Default.RunSingleQuery<T>(parameters);
+        }
 
 		public static T RunSingleQuery<T>(string sql) where T : class, new()
 		{

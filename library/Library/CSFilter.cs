@@ -60,6 +60,12 @@ namespace Vici.CoolStorage
             _parameters = new CSParameterCollection(parameters);
         }
 
+        public CSFilter(string expression, object parameters)
+        {
+            _expression = expression;
+            _parameters = new CSParameterCollection(parameters);
+        }
+
 		public CSFilter(string expression, params CSParameter[] parameters)
 		{
 			_expression = expression;
@@ -163,6 +169,11 @@ namespace Vici.CoolStorage
 			return new CSFilter(this, "OR", new CSFilter(expression, parameters));
 		}
 
+        public CSFilter Or(string expression, object parameters)
+        {
+            return new CSFilter(this, "OR", new CSFilter(expression, parameters));
+        }
+
 		public CSFilter And(CSFilter filterOr)
 		{
 			return new CSFilter(this, "AND", filterOr);
@@ -182,6 +193,11 @@ namespace Vici.CoolStorage
 		{
 			return new CSFilter(this, "AND", new CSFilter(expression, parameters));
 		}
+
+        public CSFilter And(string expression, object parameters)
+        {
+            return new CSFilter(this, "AND", new CSFilter(expression, parameters));
+        }
 
 		public static CSFilter operator|(CSFilter filter1 , CSFilter filter2)
 		{

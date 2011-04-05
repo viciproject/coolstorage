@@ -82,6 +82,11 @@ namespace Vici.CoolStorage
         {
         }
 
+        public CSList(string filterExpression, object parameters)
+            : this(filterExpression, new CSParameterCollection(parameters))
+        {
+        }
+
         public CSList(string filterExpression, string paramName, object paramValue)
             : this(filterExpression, new CSParameterCollection(paramName, paramValue))
         {
@@ -161,6 +166,11 @@ namespace Vici.CoolStorage
             return FilteredBy(new CSFilter(filter, parameters));
         }
 
+        public CSList<TObjectType> Where(string filter, object parameters)
+        {
+            return FilteredBy(new CSFilter(filter, parameters));
+        }
+
         public CSList<TObjectType> Where(string filter, string paramName, object paramValue)
         {
             return FilteredBy(new CSFilter(filter, paramName, paramValue));
@@ -201,6 +211,11 @@ namespace Vici.CoolStorage
         }
 
         public CSList<TObjectType> FilteredBy(string filter, params CSParameter[] parameters)
+        {
+            return FilteredBy(new CSFilter(filter, parameters));
+        }
+
+        public CSList<TObjectType> FilteredBy(string filter, object parameters)
         {
             return FilteredBy(new CSFilter(filter, parameters));
         }
@@ -482,6 +497,11 @@ namespace Vici.CoolStorage
         public object GetScalar(string fieldName, CSAggregate aggregate, string filterExpression)
         {
             return GetScalar(fieldName, aggregate, filterExpression, null);
+        }
+
+        public object GetScalar(string fieldName, CSAggregate aggregate, string filterExpression, object parameters)
+        {
+            return GetScalar(fieldName, aggregate, filterExpression, new CSParameterCollection(parameters));
         }
 
         public object GetScalar(string fieldName, CSAggregate aggregate, string filterExpression, string paramName, object paramValue)
@@ -1380,6 +1400,11 @@ namespace Vici.CoolStorage
         {
         }
 
+        public CSList(string filterExpression, object parameters)
+            : base(new CSFilter(filterExpression, parameters))
+        {
+        }
+
         public CSList(CSFilter filter)
             : base(filter)
         {
@@ -1403,6 +1428,11 @@ namespace Vici.CoolStorage
         public new CSList<TObject, TKey> FilteredBy(string filter, string paramName, object paramValue)
         {
             return (CSList<TObject, TKey>)base.FilteredBy(filter, paramName, paramValue);
+        }
+
+        public new CSList<TObject, TKey> FilteredBy(string filter, object parameters)
+        {
+            return (CSList<TObject, TKey>)base.FilteredBy(filter, parameters);
         }
 
         public new CSList<TObject, TKey> FilteredBy(Predicate<TObject> predicate)

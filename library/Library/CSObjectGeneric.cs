@@ -111,6 +111,11 @@ namespace Vici.CoolStorage
 			return ReadFirst(new CSFilter(filter, parameters));
 		}
 
+        public static T ReadFirst(string filter, object parameters)
+        {
+            return ReadFirst(new CSFilter(filter, parameters));
+        }
+
 		public static T ReadFirst(string filter, string paramName1, object paramValue1)
 		{
             return ReadFirst(new CSFilter(filter, paramName1, paramValue1));
@@ -147,6 +152,11 @@ namespace Vici.CoolStorage
         }
 
         public static int Count(string filter, params CSParameter[] parameters)
+        {
+            return Count(new CSFilter(filter, parameters));
+        }
+
+        public static int Count(string filter, object parameters)
         {
             return Count(new CSFilter(filter, parameters));
         }
@@ -195,6 +205,11 @@ namespace Vici.CoolStorage
 		{
 			return new CSList<T>(filter, parameters);
 		}
+
+        public static CSList<T> List(string filter, object parameters)
+        {
+            return new CSList<T>(filter, parameters);
+        }
 
 		public static CSList<T> List(string filter, string paramName, object paramValue)
 	    {
@@ -256,6 +271,15 @@ namespace Vici.CoolStorage
 			return list;
 		}
 
+        public static CSList<T> OrderedList(string orderBy, string filter, object parameters)
+        {
+            CSList<T> list = List(filter, parameters);
+
+            list.OrderBy = orderBy;
+
+            return list;
+        }
+
 		public static CSList<T> OrderedList(string orderBy, string filter, string paramName1, object paramValue1)
 		{
 			CSList<T> list = List(filter, paramName1, paramValue1);
@@ -308,6 +332,11 @@ namespace Vici.CoolStorage
 			return GetScalar(fieldName, orderBy , filterExpression, new CSParameterCollection(paramName, paramValue));
 		}
 
+        public static TScalar GetScalar<TScalar>(string fieldName, string orderBy, string filterExpression, object parameters)
+        {
+            return GetScalar<TScalar>(fieldName, orderBy, filterExpression, new CSParameterCollection(parameters));
+        }
+
         public static TScalar GetScalar<TScalar>(string fieldName, string orderBy, string filterExpression, string paramName, object paramValue)
         {
             return GetScalar<TScalar>(fieldName, orderBy, filterExpression, new CSParameterCollection(paramName, paramValue));
@@ -351,6 +380,11 @@ namespace Vici.CoolStorage
         public static TScalar GetScalar<TScalar>(string fieldName, CSAggregate aggregate, string filterExpression)
         {
             return GetScalar<TScalar>(fieldName, aggregate, filterExpression, CSParameterCollection.Empty);
+        }
+
+        public static object GetScalar(string fieldName, CSAggregate aggregate, string filterExpression, object parameters)
+        {
+            return GetScalar(fieldName, aggregate, filterExpression, new CSParameterCollection(parameters));
         }
 
 		public static object GetScalar(string fieldName, CSAggregate aggregate, string filterExpression, string paramName, object paramValue)
@@ -678,6 +712,11 @@ namespace Vici.CoolStorage
 			return new CSList<TObject, TKey>(filter, parameters);
 		}
 
+        public static new CSList<TObject, TKey> List(string filter, object parameters)
+        {
+            return new CSList<TObject, TKey>(filter, parameters);
+        }
+
 		public static new CSList<TObject, TKey> List(string filter, string paramName, object paramValue)
 		{
 			return new CSList<TObject, TKey>(filter, paramName, paramValue);
@@ -737,6 +776,15 @@ namespace Vici.CoolStorage
 
 			return list;
 		}
+
+        public new static CSList<TObject, TKey> OrderedList(string orderBy, string filter, object parameters)
+        {
+            CSList<TObject, TKey> list = List(filter, parameters);
+
+            list.OrderBy = orderBy;
+
+            return list;
+        }
 
 		public new static CSList<TObject, TKey> OrderedList(string orderBy, string filter, string paramName1, object paramValue1)
 		{
