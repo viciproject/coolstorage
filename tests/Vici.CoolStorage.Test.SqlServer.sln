@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vici.CoolStorage.Test.SqlServer", "Vici.CoolStorage.Test.SqlServer.csproj", "{EA44DC63-3545-4707-A704-8CE093497ACA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vici.CoolStorage.Test.Sqlite", "Vici.CoolStorage.Test.Sqlite.csproj", "{F273239E-0868-4572-BDE1-4C75C9E81F1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA44DC63-3545-4707-A704-8CE093497ACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA44DC63-3545-4707-A704-8CE093497ACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA44DC63-3545-4707-A704-8CE093497ACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA44DC63-3545-4707-A704-8CE093497ACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F273239E-0868-4572-BDE1-4C75C9E81F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F273239E-0868-4572-BDE1-4C75C9E81F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F273239E-0868-4572-BDE1-4C75C9E81F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F273239E-0868-4572-BDE1-4C75C9E81F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

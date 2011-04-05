@@ -70,7 +70,7 @@ namespace Vici.CoolStorage
                 else
                     continue;
 
-                Add(member.Name, value);
+                Add('@' + member.Name, value);
             }
         }
 
