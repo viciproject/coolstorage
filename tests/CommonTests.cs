@@ -732,8 +732,6 @@ namespace Vici.CoolStorage.UnitTests
         [Test]
         public void OrderBy()
         {
-           // if (GetType() == typeof(TestSQLite))
-           //     return;
 
             Order.List().DeleteAll();
 
@@ -761,8 +759,8 @@ namespace Vici.CoolStorage.UnitTests
 
             orders.OrderBy = "OrderDate";
 
-            Assert.AreEqual(orders[0].OrderDate , new DateTime(2005,1,6));
-            Assert.AreEqual(orders[2].OrderDate, new DateTime(2005, 1, 10));
+            Assert.AreEqual(new DateTime(2005,1,6),orders[0].OrderDate);
+            Assert.AreEqual(new DateTime(2005, 1, 10),orders[2].OrderDate);
 
             orders = new OrderCollection();
 
@@ -775,10 +773,13 @@ namespace Vici.CoolStorage.UnitTests
 
             Assert.AreEqual(0, orderItems.Count);
 
-            Assert.AreEqual(Order.GetScalar("Customer.Name", CSAggregate.Max,"Customer.Name<>'Alain'"), "Luc");
-            Assert.AreEqual(Order.GetScalar("Customer.Name", CSAggregate.Min), "Alain");
-            Assert.AreEqual(Order.GetScalar("OrderDate",CSAggregate.Max),new DateTime(2005,1,10));
-            Assert.AreEqual(Order.GetScalar("OrderDate", CSAggregate.Min), new DateTime(2005, 1, 6));
+            Assert.AreEqual("Luc", Order.GetScalar("Customer.Name", CSAggregate.Max,"Customer.Name<>'Alain'"));
+            Assert.AreEqual("Alain", Order.GetScalar("Customer.Name", CSAggregate.Min));
+
+#if !SQLITE
+            Assert.AreEqual(new DateTime(2005, 1, 10), Order.GetScalar<DateTime>("OrderDate", CSAggregate.Max));
+            Assert.AreEqual(new DateTime(2005, 1, 6), Order.GetScalar<DateTime>("OrderDate", CSAggregate.Min));
+#endif
         }
 
         [Test]
