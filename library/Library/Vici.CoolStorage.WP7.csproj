@@ -116,7 +116,6 @@
     <Compile Include="WP7\SQLiteDriver\SQLClient\DbType.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\Hashtable.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\ParameterDirection.cs" />
-    <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteClientFactory.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteCommand.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteCommandBuilder.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteConnection.cs" />
