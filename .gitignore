@@ -6,3 +6,6 @@ Obj
 *.suo
 *.bak
 *.resharper*
+*.pidb
+*.userprefs
+
