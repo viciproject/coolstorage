@@ -9,7 +9,7 @@ namespace Vici.CoolStorage.WP7
 {
     public class CSDataProviderSqliteWP7 : CSDataProvider
     {
-        public CSDataProviderSqliteWP7(string fileName) : base("uri=file://" + fileName)
+        public CSDataProviderSqliteWP7(string connectionString) : base(connectionString)
         {
         }
 

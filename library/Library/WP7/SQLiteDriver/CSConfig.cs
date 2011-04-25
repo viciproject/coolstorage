@@ -35,7 +35,8 @@ namespace Vici.CoolStorage
 	public enum SqliteOption
 	{
 		None = 0,
-		CreateIfNotExists = 1
+		CreateIfNotExists = 1,
+        CreateAlways = 2
 	}
 	
 	public static partial class CSConfig
@@ -59,13 +60,20 @@ namespace Vici.CoolStorage
         {
             IsolatedStorageFile isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication();
 
+            bool createIfNotExists = (sqliteOption & SqliteOption.CreateIfNotExists) != 0;
+            bool createAlways = (sqliteOption & SqliteOption.CreateAlways) != 0;
+
             bool exists = isolatedStorageFile.FileExists(dbName);
 
-			bool createIfNotExists = (sqliteOption & SqliteOption.CreateIfNotExists) != 0;
+            if (createAlways && exists)
+            {
+                exists = false;
+                isolatedStorageFile.DeleteFile(dbName);
+            }
+
+            SetDB(new CSDataProviderSqliteWP7("uri=file://" + dbName), DEFAULT_CONTEXTNAME);
 			
-            SetDB(new CSDataProviderSqliteWP7(dbName), DEFAULT_CONTEXTNAME);
-			
-			if (!exists && createIfNotExists && creationDelegate != null)
+			if (!exists && (createIfNotExists || createAlways) && creationDelegate != null)
 				creationDelegate();
         }
 	}
