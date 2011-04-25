@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.IO.IsolatedStorage;
 using Vici.CoolStorage.WP7;
 
 namespace Vici.CoolStorage
@@ -56,7 +57,9 @@ namespace Vici.CoolStorage
 
         public static void SetDB(string dbName, SqliteOption sqliteOption, Action creationDelegate)
         {
-			bool exists = File.Exists(dbName);
+            IsolatedStorageFile isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication();
+
+            bool exists = isolatedStorageFile.FileExists(dbName);
 
 			bool createIfNotExists = (sqliteOption & SqliteOption.CreateIfNotExists) != 0;
 			
