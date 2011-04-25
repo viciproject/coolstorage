@@ -41,7 +41,7 @@ namespace Vici.CoolStorage
 	{
         public static void SetDB(string dbName)
         {
-			SetDB(dbName);
+			SetDB(dbName,SqliteOption.CreateIfNotExists, null);
         }
 
 		public static void SetDB(string dbName,  Action creationDelegate)
