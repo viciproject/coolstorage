@@ -47,8 +47,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
-    <Reference Include="Vici.Core.WP7">
-      <HintPath>..\References\Vici.Core\Vici.Core.WP7.dll</HintPath>
+    <Reference Include="Vici.Core.WP7, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\vici.core.1.0.0.1052\lib\sl3-wp\Vici.Core.WP7.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -117,11 +117,8 @@
     <Compile Include="WP7\SQLiteDriver\SQLClient\Hashtable.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\ParameterDirection.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteCommand.cs" />
-    <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteCommandBuilder.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteConnection.cs" />
-    <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteConnectionStringBuilder.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteDataReader.cs" />
-    <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteDataSourceEnumerator.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteError.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteExceptions.cs" />
     <Compile Include="WP7\SQLiteDriver\SQLClient\SqliteParameter.cs" />
@@ -215,6 +212,7 @@
     <Compile Include="WP7\WP7Mocks.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="WP7\SQLiteDriver\sqlite\loadext_c.cs.orig" />
     <None Include="WP7\SQLiteDriver\sqlite\mutex_c.cs.orig" />
     <None Include="WP7\SQLiteDriver\sqlite\mutex_noop_c.cs.orig" />
