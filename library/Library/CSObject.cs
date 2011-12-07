@@ -559,7 +559,8 @@ namespace Vici.CoolStorage
                 {
                     whereClause = whereClause.And(_schema.DB.QuoteField(schemaColumn.Name) + "=@" + parameter.Name.Substring(1));
                 }
-                else
+
+                if (fieldValue.IsDirty && !fieldValue.SchemaField.ReadOnly && !schemaColumn.Identity && !schemaColumn.ReadOnly)
                 {
                     fieldNames.Add(schemaColumn.Name);
                     fieldValues.Add("@" + parameter.Name.Substring(1));
