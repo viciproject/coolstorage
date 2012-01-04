@@ -50,12 +50,9 @@ namespace Vici.CoolStorage
 
 		public CSJoin GetExistingJoin(CSJoin join)
 		{
-			int i = _joins.IndexOf(join);
+		    int i = _joins.IndexOf(join);
 
-			if (i >= 0)
-				return _joins[i];
-			else
-				return null;
+		    return i >= 0 ? _joins[i] : null;
 		}
 
         public void Add(CSJoin join)

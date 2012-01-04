@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Activa Consult")]
 [assembly: AssemblyProduct("CoolStorage.MySql")]
-[assembly: AssemblyCopyright("Copyright © Activa Consult 2006-2007")]
+[assembly: AssemblyCopyright("Copyright © Activa Consult 2006-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
