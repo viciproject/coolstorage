@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Vici.CoolStorage
 {
-    public static class CSNameGenerator
+    internal static class CSNameGenerator
     {
-        [ThreadStatic] private static int _currentTableAlias = 0;
-        [ThreadStatic] private static int _currentFieldAlias = 0;
-        [ThreadStatic] private static int _currentParamCounter = 0;
+        [ThreadStatic] private static int _currentTableAlias;
+        [ThreadStatic] private static int _currentFieldAlias;
+        [ThreadStatic] private static int _currentParamCounter;
 
         private static readonly string[] _tableAliases;
         private static readonly string[] _reservedWords = new[] { "is", "as", "in", "on", "to", "at", "go", "by", "of", "or", "if", "no" };
@@ -66,6 +66,7 @@ namespace Vici.CoolStorage
                 return paramName;
             }
         }
+
         internal static void Reset()
         {
             _currentFieldAlias = 0;

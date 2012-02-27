@@ -185,7 +185,7 @@ namespace Vici.CoolStorage
                     DefaultSortExpressionAttribute sortAttribute = ClassType.GetAttribute<DefaultSortExpressionAttribute>(true);
 
                     if (mapToAttribute == null)
-                        throw new CSException("No MapTo() attribute defined for class " + ClassType.Name);
+                        throw new CSException(string.Format("No MapTo() attribute defined for class {0}", ClassType.Name));
 
                     _tableName = mapToAttribute.Name;
                     _context = mapToAttribute.Context;
@@ -203,18 +203,10 @@ namespace Vici.CoolStorage
         {
             CSSchemaColumn[] columns = DB.GetSchemaColumns(TableName);
 
-//            DataTable schemaTable = DB.GetSchemaTable(TableName);
-
             _identityColumn = null;
 
             _columnList.Clear();
             _keyColumnList.Clear();
-
-            /*
-            bool hasHidden = schemaTable.Columns.Contains("IsHidden");
-            bool hasIdentity = schemaTable.Columns.Contains("IsIdentity");
-            bool hasAutoincrement = schemaTable.Columns.Contains("IsAutoIncrement");
-            */
 
             foreach (var column in columns)
             {
@@ -314,10 +306,10 @@ namespace Vici.CoolStorage
                         schemaField.Relation.ForeignKey = schemaField.Relation.LocalKey;
 
                     if (schemaField.Relation.LocalKey == null)
-                        throw new CSException("OneToMany relation [" + schemaField.Name + "] for class [" + ClassType.Name + "] cannot be created. Local key is not supplied and no single primary key exists");
+                        throw new CSException(string.Format("OneToMany relation [{0}] for class [{1}] cannot be created. Local key is not supplied and no single primary key exists", schemaField.Name, ClassType.Name));
 
                     if (_columnList[schemaField.Relation.LocalKey] == null)
-                        throw new CSException("OneToMany relation [" + schemaField.Name + "] for class [" + ClassType.Name + "] cannot be created. Local key [" + schemaField.Relation.LocalKey + "] not defined in DB");
+                        throw new CSException(string.Format("OneToMany relation [{0}] for class [{1}] cannot be created. Local key [{2}] not defined in DB", schemaField.Name, ClassType.Name, schemaField.Relation.LocalKey));
                 }
 
                 if (schemaField.Relation.Attribute is ManyToOneAttribute)
@@ -333,10 +325,10 @@ namespace Vici.CoolStorage
                         schemaField.Relation.LocalKey = schemaField.Relation.ForeignKey;
 
                     if (schemaField.Relation.ForeignKey == null)
-                        throw new CSException("ManyToOne relation [" + schemaField.Name + "] for class [" + ClassType.Name + "] cannot be created. Foreign key is not supplied and related table has no single primary");
+                        throw new CSException(string.Format("ManyToOne relation [{0}] for class [{1}] cannot be created. Foreign key is not supplied and related table has no single primary", schemaField.Name, ClassType.Name));
 
                     if (_columnList[schemaField.Relation.LocalKey] == null)
-                        throw new CSException("ManyToOne relation [" + schemaField.Name + "] for class [" + ClassType.Name + "] cannot be created. Local key [" + schemaField.Relation.LocalKey + "] not defined in DB");
+                        throw new CSException(string.Format("ManyToOne relation [{0}] for class [{1}] cannot be created. Local key [{2}] not defined in DB", schemaField.Name, ClassType.Name, schemaField.Relation.LocalKey));
                 }
 
                 if (schemaField.Relation.Attribute is OneToOneAttribute)
@@ -346,7 +338,7 @@ namespace Vici.CoolStorage
                     schemaField.Relation.ForeignType = schemaField.FieldType;
 
                     if (schemaField.Relation.LocalKey == null && schemaField.Relation.ForeignKey == null)
-                        throw new CSException("LocalKey or ForeignKey is required for OneToOne relation <" + schemaField.Name + "> in class <" + ClassType.Name + ">");
+                        throw new CSException(string.Format("LocalKey or ForeignKey is required for OneToOne relation <{0}> in class <{1}>", schemaField.Name, ClassType.Name));
 
                     if (schemaField.Relation.LocalKey == null)
                         schemaField.Relation.LocalKey = schemaField.Relation.ForeignKey;
@@ -355,7 +347,7 @@ namespace Vici.CoolStorage
                         schemaField.Relation.ForeignKey = schemaField.Relation.LocalKey;
 
                     if (_columnList[schemaField.Relation.LocalKey] == null)
-                        throw new CSException("OneToOne relation <" + schemaField.Name + "> for class <" + ClassType.Name + "> cannot be created. Local key <" + schemaField.Relation.LocalKey + "> not defined in DB");
+                        throw new CSException(string.Format("OneToOne relation <{0}> for class <{1}> cannot be created. Local key <{2}> not defined in DB", schemaField.Name, ClassType.Name, schemaField.Relation.LocalKey));
                 }
 
                 if (schemaField.Relation.Attribute is ManyToManyAttribute)
@@ -388,7 +380,7 @@ namespace Vici.CoolStorage
 
 
                     if (_columnList[schemaField.Relation.LocalKey] == null)
-                        throw new CSException("ManyToMany relation [" + schemaField.Name + "] for class [" + ClassType.Name + "] cannot be created. Local key [" + schemaField.Relation.LocalKey + "] not defined in DB");
+                        throw new CSException(string.Format("ManyToMany relation [{0}] for class [{1}] cannot be created. Local key [{2}] not defined in DB", schemaField.Name, ClassType.Name, schemaField.Relation.LocalKey));
                 }
             }
         }
@@ -406,7 +398,7 @@ namespace Vici.CoolStorage
             }
 
             if (_columnsToRead.Count < 1)
-                throw new CSException("No data fields mapped or primary key is lazy for object type <" + ClassType.Name + ">");
+                throw new CSException(string.Format("No data fields mapped or primary key is lazy for object type <{0}>", ClassType.Name));
         }
     }
 }
