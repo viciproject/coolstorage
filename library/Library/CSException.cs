@@ -25,59 +25,74 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Vici.CoolStorage
 {
 #if !WINDOWS_PHONE
-	[Serializable]
+    [Serializable]
 #endif
-	public class CSException : Exception
-	{
-		public CSException()
-		{
-		}
+    public class CSException : Exception
+    {
+        public CSException()
+        {
+        }
 
-		public CSException(string message) 
-			: base(message)
-		{
-		}
+        public CSException(string message) 
+            : base(message)
+        {
+        }
 
-		public CSException(string message , Exception innerException) 
-			: base(message,innerException)
-		{
-		}
+        public CSException(string message , Exception innerException) 
+            : base(message,innerException)
+        {
+        }
 
 #if !WINDOWS_PHONE
-		public CSException(SerializationInfo info,StreamingContext context) : base(info,context)
-		{
-		}
+        public CSException(SerializationInfo info,StreamingContext context) : base(info,context)
+        {
+        }
 #endif
-	}
+    }
 
-	public class CSObjectNotFoundException : CSException
-	{
-		public CSObjectNotFoundException(Type type , object key) : base(String.Format("Object with key [{0}] of type [{1}] does not exist",key,type.Name))
-		{
-		}
-	}
+    public sealed class CSSQLException : CSException
+    {
+        public CSSQLException(string message, Exception innerException, string sqlQuery, IEnumerable<CSParameter> parameters)
+            : base(message, innerException)
+        {
+            Data.Add("sqlQuery", sqlQuery);
 
-	public class CSOptimisticLockException : CSException
-	{
-		public CSOptimisticLockException() : base("Optimistic lock error")
-		{
-		}
-	}
+            if (parameters == null) return;
 
-	public class CSValidationException : CSException
-	{
-	}
-	
-	public class CSExpressionException : CSException
-	{
-		public CSExpressionException(string message)
-			: base(message)
-		{
-		}
-	}
+            foreach (var p in parameters)
+                Data.Add(string.Format("Parameter {0} ({1})", p.Name, p.Value.GetType().Name), p.Value);
+        }
+    }
+
+    public class CSObjectNotFoundException : CSException
+    {
+        public CSObjectNotFoundException(Type type , object key) : base(String.Format("Object with key [{0}] of type [{1}] does not exist",key,type.Name))
+        {
+        }
+    }
+
+    public class CSOptimisticLockException : CSException
+    {
+        public CSOptimisticLockException() : base("Optimistic lock error")
+        {
+        }
+    }
+
+    public class CSValidationException : CSException
+    {
+    }
+    
+    public class CSExpressionException : CSException
+    {
+        public CSExpressionException(string message)
+            : base(message)
+        {
+        }
+    }
 }
