@@ -62,22 +62,22 @@ namespace Vici.CoolStorage
 		}
 	}
 
-    public class CSOptimisticLockException : CSException
-    {
-        public CSOptimisticLockException() : base("Optimistic lock error")
-        {
-        }
-    }
+	public class CSOptimisticLockException : CSException
+	{
+		public CSOptimisticLockException() : base("Optimistic lock error")
+		{
+		}
+	}
 
 	public class CSValidationException : CSException
 	{
 	}
-    
-    public class CSExpressionException : CSException
-    {
-        public CSExpressionException(string message)
-            : base(message)
-        {
-        }
-    }
+	
+	public class CSExpressionException : CSException
+	{
+		public CSExpressionException(string message)
+			: base(message)
+		{
+		}
+	}
 }
