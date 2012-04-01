@@ -48,7 +48,7 @@ namespace Vici.CoolStorage
 
         private static void ReadConfig()
         {
-#if !MONOTOUCH && !WINDOWS_PHONE && !SILVERLIGHT
+#if !MONOTOUCH && !WINDOWS_PHONE && !SILVERLIGHT && !MONO4ANDROID
             NameValueCollection configurationSection = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("CoolStorage");
 
             if (configurationSection == null)
@@ -221,7 +221,7 @@ namespace Vici.CoolStorage
                 {
                     if (!_globalDbMap.ContainsKey(contextName))
                     {
-#if !MONOTOUCH && !WINDOWS_PHONE && !SILVERLIGHT
+#if !MONOTOUCH && !WINDOWS_PHONE && !SILVERLIGHT && !MONO4ANDROID
                         NameValueCollection configurationSection = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("CoolStorage");
 
                         if (configurationSection != null)
