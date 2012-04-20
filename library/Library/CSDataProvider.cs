@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Transactions;
+//using System.Transactions;
 using IsolationLevel = System.Data.IsolationLevel;
 using System.IO;
 using System.Text;
@@ -215,7 +215,7 @@ namespace Vici.CoolStorage
             }
             catch (Exception ex)
             {
-                throw new CSException("Error executing query. Possible syntax error", ex);
+                throw new CSSQLException("Error executing query. Possible syntax error", ex, sqlQuery, parameters);
             }
             finally
             {
@@ -263,6 +263,10 @@ namespace Vici.CoolStorage
             {
                 return -1;
             }
+            catch (Exception ex)
+            {
+                throw new CSSQLException("ExecuteNonQuery exception", ex, sqlQuery, parameters);
+            }
             finally
             {
                 LogEnd(logId);
@@ -291,6 +295,10 @@ namespace Vici.CoolStorage
                 }
 
                 return null;
+            }
+            catch (Exception ex)
+            {
+                throw new CSSQLException("GetScalar exception", ex, sqlQuery, parameters);
             }
             finally
             {

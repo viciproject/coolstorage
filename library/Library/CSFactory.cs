@@ -36,18 +36,18 @@ using System.Threading;
 
 namespace Vici.CoolStorage
 {
-    internal class CSFactory
+	internal class CSFactory
 	{
 #if !MONOTOUCH && !WINDOWS_PHONE
 		private static readonly object _syncObject = new object();
 
 		private static readonly Dictionary<Type,OpCode> _opCodeMap;
-	    private static readonly Dictionary<Type, Type> _classMap;
+		private static readonly Dictionary<Type, Type> _classMap;
 
 		static CSFactory()
 		{
-            _opCodeMap = new Dictionary<Type, OpCode>();
-            _classMap = new Dictionary<Type, Type>();
+			_opCodeMap = new Dictionary<Type, OpCode>();
+			_classMap = new Dictionary<Type, Type>();
 
 			_opCodeMap[typeof(Byte)] = OpCodes.Ldind_U1;
 			_opCodeMap[typeof(Char)] = OpCodes.Ldind_I1;
@@ -62,15 +62,15 @@ namespace Vici.CoolStorage
 		}
 
 
-        private static Type GetObjectType(Type baseType)
-        {
+		private static Type GetObjectType(Type baseType)
+		{
 			Type type;
 
-            if (!_classMap.TryGetValue(baseType, out type))
+			if (!_classMap.TryGetValue(baseType, out type))
 			{
 				lock (_syncObject)
 				{
-                    if (!_classMap.TryGetValue(baseType, out type))
+					if (!_classMap.TryGetValue(baseType, out type))
 					{
 						type = CreateObjectClass(baseType);
 
@@ -79,33 +79,33 @@ namespace Vici.CoolStorage
 				}
 			}
 
-            return type;
-        }
+			return type;
+		}
 #endif
-        private static T CreateObject<T>() where T : CSObject<T>
-        {
+		private static T CreateObject<T>() where T : CSObject<T>
+		{
 			if (typeof(T).IsAbstract)
-            {
+			{
 #if MONOTOUCH || WINDOWS_PHONE
 				throw new NotSupportedException("Mapping classes should not be declared abstract");
 #else
-                return (T) Activator.CreateInstance(GetObjectType(typeof(T)));
+				return (T) Activator.CreateInstance(GetObjectType(typeof(T)));
 #endif
 			}
 			else
 			{
 				return Activator.CreateInstance<T>();
 			}
-        }
+		}
 
 		private static CSObject CreateObject(Type baseType)
 		{
 			if (baseType.IsAbstract)
-            {
+			{
 #if MONOTOUCH || WINDOWS_PHONE
 				throw new NotSupportedException("Mapping classes should not be declared abstract");
 #else
-                return (CSObject) Activator.CreateInstance(GetObjectType(baseType));
+				return (CSObject) Activator.CreateInstance(GetObjectType(baseType));
 #endif
 			}
 			else
@@ -127,11 +127,11 @@ namespace Vici.CoolStorage
 
 			assemblyName.Name = "Vici.CoolStorage.Assemblies." + baseType.Name;
 
-            // Required for partial trust:
-            CustomAttributeBuilder[] assemblyAttributes = new[] 
-                { 
-                    new CustomAttributeBuilder(typeof(SecurityTransparentAttribute).GetConstructor(Type.EmptyTypes), new object[0])
-                };
+			// Required for partial trust:
+			CustomAttributeBuilder[] assemblyAttributes = new[] 
+				{ 
+					new CustomAttributeBuilder(typeof(SecurityTransparentAttribute).GetConstructor(Type.EmptyTypes), new object[0])
+				};
 
 			AssemblyBuilder assemblyBuilder = Thread.GetDomain().DefineDynamicAssembly(assemblyName , AssemblyBuilderAccess.Run, assemblyAttributes);
 
@@ -226,27 +226,27 @@ namespace Vici.CoolStorage
 		}
 #endif
 
-        internal static T New<T>() where T:CSObject<T>
-        {
-            return CreateObject<T>();
-        }
-
-        internal static T ReadSafe<T>(params object[] p) where T : CSObject<T>
-        {
-            T csObject = CreateObject<T>();
-
-            if (csObject.Read(p))
-                return csObject;
-            
-            return null;
-        }
-
-  		internal static T Read<T>(params object[] p) where T:CSObject<T>
+		internal static T New<T>() where T:CSObject<T>
 		{
-  		    T csObject = ReadSafe<T>(p);
+			return CreateObject<T>();
+		}
 
-            if (csObject != null)
-                return csObject;
+		internal static T ReadSafe<T>(params object[] p) where T : CSObject<T>
+		{
+			T csObject = CreateObject<T>();
+
+			if (csObject.Read(p))
+				return csObject;
+			
+			return null;
+		}
+
+		internal static T Read<T>(params object[] p) where T:CSObject<T>
+		{
+			T csObject = ReadSafe<T>(p);
+
+			if (csObject != null)
+				return csObject;
 
 			throw new CSObjectNotFoundException(typeof(T), p[0]);
 		}

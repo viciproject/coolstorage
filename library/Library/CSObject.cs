@@ -47,6 +47,9 @@ namespace Vici.CoolStorage
     }
 
     [Serializable]
+#if MONO4ANDROID
+    [Android.Runtime.Preserve(AllMembers = true)]
+#endif
     public abstract class CSObject : IEquatable<CSObject>, ISerializable, INotifyPropertyChanged
     {
         private CSFieldValueCollection _fieldData;
