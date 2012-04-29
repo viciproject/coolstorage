@@ -134,12 +134,16 @@ namespace Vici.CoolStorage
 
         private ICSDbConnection _dbConnection;
         private ICSDbTransaction _currentTransaction;
+#if !MONOTOUCH
         private TransactionScope _currentTransactionScope;
+#endif        
         private int _transactionDepth;
         private readonly string _connectionString;
 
         private readonly Stack<ICSDbTransaction> _transactionStack = new Stack<ICSDbTransaction>();
+#if !MONOTOUCH
         private readonly Stack<TransactionScope> _transactionScopeStack = new Stack<TransactionScope>();
+#endif
         private readonly Stack<bool> _newTransactionStack = new Stack<bool>();
 
         protected CSDataProvider(string connectionString)
@@ -312,9 +316,11 @@ namespace Vici.CoolStorage
         {
             _transactionDepth++;
 
+#if !MONOTOUCH
             if (CSConfig.UseTransactionScope)
                 _transactionScopeStack.Push(_currentTransactionScope);
             else
+#endif            
                 _transactionStack.Push(_currentTransaction);
 
             _newTransactionStack.Push(false);
@@ -328,9 +334,11 @@ namespace Vici.CoolStorage
             {
                 if (CSConfig.UseTransactionScope)
                 {
+#if !MONOTOUCH
                     _currentTransactionScope = new TransactionScope();
 
                     _transactionScopeStack.Push(_currentTransactionScope);
+#endif                    
                 }
                 else
                 {
@@ -343,6 +351,7 @@ namespace Vici.CoolStorage
             }
             else
             {
+#if !MONOTOUCH
                 if (CSConfig.UseTransactionScope)
                 {
                     if (_currentTransactionScope != null)
@@ -359,6 +368,7 @@ namespace Vici.CoolStorage
                     _transactionScopeStack.Push(_currentTransactionScope);
                 }
                 else
+#endif                
                 {
                     if (_currentTransaction != null)
                     {
@@ -380,6 +390,7 @@ namespace Vici.CoolStorage
         {
             bool wasNewTransaction = _newTransactionStack.Pop();
 
+#if !MONOTOUCH
             if (CSConfig.UseTransactionScope)
             {
                 TransactionScope transactionScope = _transactionScopeStack.Pop();
@@ -396,6 +407,7 @@ namespace Vici.CoolStorage
                     _currentTransactionScope = null;
             }
             else
+#endif            
             {
                 ICSDbTransaction transaction = _transactionStack.Pop();
 
@@ -420,6 +432,7 @@ namespace Vici.CoolStorage
         {
             bool wasNewTransaction = _newTransactionStack.Pop();
 
+#if !MONOTOUCH
             if (CSConfig.UseTransactionScope)
             {
                 TransactionScope transactionScope = _transactionScopeStack.Pop();
@@ -435,6 +448,7 @@ namespace Vici.CoolStorage
                     _currentTransactionScope = null;
             }
             else
+#endif            
             {
                 ICSDbTransaction transaction = _transactionStack.Pop();
 
