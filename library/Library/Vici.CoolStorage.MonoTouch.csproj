@@ -61,7 +61,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Transactions" />
     <Reference Include="Vici.Core.MT">
-      <HintPath>..\References\Vici.Core\Vici.Core.MT.dll</HintPath>
+      <HintPath>..\..\References\Vici.Core\Vici.Core.MT.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
