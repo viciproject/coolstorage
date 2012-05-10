@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Vici.Core;
 using Mono.Data.Sqlite;
 using System.Data;
 
@@ -39,18 +38,24 @@ namespace Vici.CoolStorage
             : base(connectionString)
         {
         }
+
+        public CSDataProviderSQLite(string fileName, bool useDateTimeTicks)
+            : base("Data Source=" + fileName + ";DateTimeFormat=" + (useDateTimeTicks ? "Ticks" : "ISO8601"))
+        {
+        }
+
         protected override ICSDbConnection CreateConnection()
         {
             SqliteConnection conn = new SqliteConnection(ConnectionString);
 
             conn.Open();
-            
+
             return new CSSqliteConnection(conn);
         }
 
         protected override void ClearConnectionPool()
         {
-            //SqliteConnection.ClearAllPools();
+            SqliteConnection.ClearAllPools();
         }
 
         protected internal override CSDataProvider Clone()
@@ -65,14 +70,17 @@ namespace Vici.CoolStorage
             if (CurrentTransaction != null)
                 sqlCommand.Transaction = ((CSSqliteTransaction)CurrentTransaction).Transaction;
 
-            sqlCommand.CommandType = CommandType.Text;
+            if (sqlQuery.ToUpper().StartsWith("DELETE ") || sqlQuery.ToUpper().StartsWith("SELECT ") || sqlQuery.ToUpper().StartsWith("UPDATE ") || sqlQuery.ToUpper().StartsWith("INSERT ") || sqlQuery.ToUpper().StartsWith("CREATE "))
+                sqlCommand.CommandType = CommandType.Text;
+            else
+                sqlCommand.CommandType = CommandType.StoredProcedure;
 
             sqlCommand.CommandText = Regex.Replace(sqlQuery, @"@(?<name>[a-z0-9A-Z_]+)", "@${name}");
 
             if (parameters != null && !parameters.IsEmpty)
                 foreach (CSParameter parameter in parameters)
                 {
-                    SqliteParameter dataParameter = sqlCommand.CreateParameter();
+                    IDbDataParameter dataParameter = sqlCommand.CreateParameter();
 
                     dataParameter.ParameterName = "@" + parameter.Name.Substring(1);
                     dataParameter.Direction = ParameterDirection.Input;
@@ -84,7 +92,7 @@ namespace Vici.CoolStorage
             return new CSSqliteCommand(sqlCommand);
         }
 
-        protected internal override string QuoteField(string fieldName) { return "\"" + fieldName.Replace(".","\".\"") + "\""; }
+        protected internal override string QuoteField(string fieldName) { return "\"" + fieldName.Replace(".", "\".\"") + "\""; }
         protected internal override string QuoteTable(string tableName) { return "\"" + tableName + "\""; }
 
         protected internal override string NativeFunction(string functionName, ref string[] parameters)
@@ -161,6 +169,52 @@ namespace Vici.CoolStorage
             return sql;
         }
 
+        protected internal override CSSchemaColumn[] GetSchemaColumns(string tableName)
+        {
+            using (ICSDbConnection newConn = CreateConnection())
+            {
+                ICSDbCommand dbCommand = newConn.CreateCommand();
+
+                dbCommand.CommandText = "select * from " + QuoteTable(tableName);
+
+                using (CSSqliteReader dataReader = (CSSqliteReader)dbCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo))
+                {
+                    List<CSSchemaColumn> columns = new List<CSSchemaColumn>();
+
+                    DataTable schemaTable = dataReader.Reader.GetSchemaTable();
+
+                    bool hasHidden = schemaTable.Columns.Contains("IsHidden");
+                    bool hasIdentity = schemaTable.Columns.Contains("IsIdentity");
+                    bool hasAutoincrement = schemaTable.Columns.Contains("IsAutoIncrement");
+
+                    foreach (DataRow schemaRow in schemaTable.Rows)
+                    {
+                        CSSchemaColumn schemaColumn = new CSSchemaColumn();
+
+                        if (hasHidden && !schemaRow.IsNull("IsHidden") && (bool)schemaRow["IsHidden"])
+                            schemaColumn.Hidden = true;
+
+                        schemaColumn.IsKey = (bool)schemaRow["IsKey"];
+                        schemaColumn.AllowNull = (bool)schemaRow["AllowDBNull"];
+                        schemaColumn.Name = (string)schemaRow["ColumnName"];
+                        schemaColumn.ReadOnly = (bool)schemaRow["IsReadOnly"];
+                        schemaColumn.DataType = (Type)schemaRow["DataType"];
+                        schemaColumn.Size = (int)schemaRow["ColumnSize"];
+
+                        if (hasAutoincrement && !schemaRow.IsNull("IsAutoIncrement") && (bool)schemaRow["IsAutoIncrement"])
+                            schemaColumn.Identity = true;
+
+                        if (hasIdentity && !schemaRow.IsNull("IsIdentity") && (bool)schemaRow["IsIdentity"])
+                            schemaColumn.Identity = true;
+
+                        columns.Add(schemaColumn);
+                    }
+
+                    return columns.ToArray();
+                }
+            }
+        }
+
         protected internal override bool SupportsNestedTransactions
         {
             get { return false; }
@@ -181,106 +235,6 @@ namespace Vici.CoolStorage
             get { return false; }
         }
 
-
-        protected internal override CSSchemaColumn[] GetSchemaColumns(string tableName)
-        {
-            List<string> autoColumns = new List<string>();
-
-            using (
-                CSSqliteCommand cmd = (CSSqliteCommand) CreateCommand("select sql from sqlite_master where type='table' and name=@tablename", new CSParameterCollection("@tablename", tableName)))
-            {
-                string sql = (string) cmd.Command.ExecuteScalar();
-
-                Regex regex = new Regex(@"[\(,]\s*(?<column>[a-z0-9_]+).*?AUTOINCREMENT", RegexOptions.IgnoreCase);
-
-                Match m = regex.Match(sql);
-
-                if (m.Success)
-                {
-                    autoColumns.Add(m.Groups["column"].Value.ToUpper());
-                }
-
-            }
-
-            List<CSSchemaColumn> columns = new List<CSSchemaColumn>();
-
-            using (CSSqliteCommand cmd = (CSSqliteCommand) CreateCommand("pragma table_info (" + tableName + ")", null))
-            {
-                using (CSSqliteReader reader = (CSSqliteReader) cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        CSSchemaColumn column = new CSSchemaColumn();
-
-                        string columnName = (string) reader.Reader["name"];
-
-                        column.Name = columnName;
-                        column.IsKey = reader.Reader["pk"].Convert<bool>();
-                        column.AllowNull = !reader.Reader["notnull"].Convert<bool>();
-                        column.ReadOnly = false;
-                        column.Size = 1000;
-
-                        Type dataType = null;
-
-                        string dbType = (string) reader.Reader["type"];
-
-                        int paren = dbType.IndexOf('(');
-
-                        if (paren > 0)
-                            dbType = dbType.Substring(0, paren);
-
-                        dbType = dbType.ToUpper();
-
-                        switch (dbType)
-                        {
-                            case "TEXT":
-                                dataType = typeof (string);
-                                break;
-                            case "VARCHAR":
-                                dataType = typeof (string);
-                                break;
-                            case "INTEGER":
-                                dataType = typeof (int);
-                                break;
-                            case "BOOL":
-                                dataType = typeof (bool);
-                                break;
-                            case "DOUBLE":
-                                dataType = typeof (double);
-                                break;
-                            case "FLOAT":
-                                dataType = typeof (double);
-                                break;
-                            case "REAL":
-                                dataType = typeof (double);
-                                break;
-                            case "CHAR":
-                                dataType = typeof (string);
-                                break;
-                            case "BLOB":
-                                dataType = typeof (byte[]);
-                                break;
-                            case "NUMERIC":
-                                dataType = typeof (decimal);
-                                break;
-                            case "DATETIME":
-                                dataType = typeof (DateTime);
-                                break;
-
-                        }
-
-                        column.DataType = dataType;
-                        column.Identity = autoColumns.Contains(columnName.ToUpper());
-
-                        columns.Add(column);
-                    }
-                }
-
-                return columns.ToArray();
-
-            }
-        }
-        
         private class CSSqliteConnection : ICSDbConnection
         {
             public SqliteConnection Connection;
@@ -307,7 +261,7 @@ namespace Vici.CoolStorage
 
             public ICSDbTransaction BeginTransaction(IsolationLevel isolationLevel)
             {
-                return new CSSqliteTransaction(Connection.BeginTransaction());
+                return new CSSqliteTransaction(Connection.BeginTransaction(isolationLevel));
             }
 
             public ICSDbTransaction BeginTransaction()
@@ -349,41 +303,17 @@ namespace Vici.CoolStorage
 
             public ICSDbReader ExecuteReader(CommandBehavior commandBehavior)
             {
-                try
-                {
-                    return new CSSqliteReader(Command.ExecuteReader(commandBehavior));
-                }
-                catch (Exception ex)
-                {
-                    ex.Data.Add("CommandText", CommandText);
-                    throw;
-                }
+                return new CSSqliteReader(Command.ExecuteReader(commandBehavior));
             }
 
             public ICSDbReader ExecuteReader()
             {
-                try
-                {
-                    return new CSSqliteReader(Command.ExecuteReader());
-                }
-                catch (Exception ex)
-                {
-                    ex.Data.Add("CommandText", CommandText);
-                    throw;
-                }
+                return new CSSqliteReader(Command.ExecuteReader());
             }
 
             public int ExecuteNonQuery()
             {
-                try
-                {
-                    return Command.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    ex.Data.Add("CommandText", CommandText);
-                    throw;
-                }
+                return Command.ExecuteNonQuery();
             }
 
             public void Dispose()
@@ -403,7 +333,7 @@ namespace Vici.CoolStorage
 
             public void Dispose()
             {
-                //Transaction.Dispose();
+                Transaction.Dispose();
             }
 
             public void Commit()
@@ -429,6 +359,11 @@ namespace Vici.CoolStorage
             public void Dispose()
             {
                 Reader.Dispose();
+            }
+
+            public DataTable GetSchemaTable()
+            {
+                return Reader.GetSchemaTable();
             }
 
             public int FieldCount
