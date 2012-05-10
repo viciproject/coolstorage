@@ -27,10 +27,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-//using System.Transactions;
 using IsolationLevel = System.Data.IsolationLevel;
 using System.IO;
 using System.Text;
+
+#if !MONO4ANDROID
+using System.Transactions;
+#endif
 
 namespace Vici.CoolStorage
 {

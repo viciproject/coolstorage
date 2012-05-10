@@ -129,7 +129,14 @@ namespace Vici.CoolStorage
             lock (_staticLock)
                 _firstSchemaCreated = true;
 
-            if (objType.BaseType.IsGenericType && objType.BaseType.BaseType.IsGenericType && objType.BaseType.BaseType.GetGenericTypeDefinition() == typeof(CSObject<>))
+            if (objType == null)
+                throw new ArgumentNullException("objType");
+
+            if (objType.BaseType == null)
+                throw new ArgumentException("Type is not a class");
+
+            if ((objType.BaseType.IsGenericType && objType.BaseType.GetGenericTypeDefinition() == typeof(CSObject<>)) 
+                || objType.BaseType.IsGenericType && objType.BaseType.BaseType.IsGenericType && objType.BaseType.BaseType.GetGenericTypeDefinition() == typeof(CSObject<>))
             {
                 _classType = objType;
                 _nonAbstract = true;
@@ -138,6 +145,7 @@ namespace Vici.CoolStorage
                 _classType = objType;
             else
                 _classType = objType.BaseType;
+            
 
             CreateContext();
 
