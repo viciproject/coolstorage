@@ -47,9 +47,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
-    <Reference Include="Vici.Core.WP7, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\vici.core.1.0.0.1052\lib\sl3-wp\Vici.Core.WP7.dll</HintPath>
-    </Reference>
+    <Reference Include="Vici.Core.WP7, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\BooleanValueAttribute.cs" />
