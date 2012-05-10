@@ -41,14 +41,14 @@ namespace Vici.CoolStorage
             
 		}
 
-		protected override IDbConnection CreateConnection()
-		{
-			MySqlConnection conn = new MySqlConnection(ConnectionString);
+        protected override ICSDbConnection CreateConnection()
+        {
+            MySqlConnection conn = new MySqlConnection(ConnectionString);
 
-			conn.Open();
+            conn.Open();
 
-			return conn;
-		}
+            return new CSSqlConnection(conn);
+        }
 
         protected override void ClearConnectionPool()
         {
@@ -60,12 +60,12 @@ namespace Vici.CoolStorage
 			return new CSDataProviderMySql(ConnectionString);
 		}
 
-		protected override IDbCommand CreateCommand(string sqlQuery, CSParameterCollection parameters)
+		protected override ICSDbCommand CreateCommand(string sqlQuery, CSParameterCollection parameters)
 		{
-			MySqlCommand mySqlCommand = (MySqlCommand)Connection.CreateCommand();
+            MySqlCommand mySqlCommand = ((CSSqlCommand)Connection.CreateCommand()).Command;
 
-			mySqlCommand.Transaction = (MySqlTransaction)CurrentTransaction;
-
+            if (CurrentTransaction != null)
+                mySqlCommand.Transaction = ((CSSqlTransaction)CurrentTransaction).Transaction;
 
             if (sqlQuery.StartsWith("!"))
             {
@@ -92,8 +92,54 @@ namespace Vici.CoolStorage
 					mySqlCommand.Parameters.Add(dataParameter);
 				}
 
-			return mySqlCommand;
+            return new CSSqlCommand(mySqlCommand);
 		}
+
+        protected override CSSchemaColumn[] GetSchemaColumns(string tableName)
+        {
+            using (ICSDbConnection newConn = CreateConnection())
+            {
+                ICSDbCommand dbCommand = newConn.CreateCommand();
+
+                dbCommand.CommandText = "select * from " + QuoteTable(tableName);
+
+                using (CSSqlReader dataReader = (CSSqlReader)dbCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo))
+                {
+                    List<CSSchemaColumn> columns = new List<CSSchemaColumn>();
+
+                    DataTable schemaTable = dataReader.Reader.GetSchemaTable();
+
+                    bool hasHidden = schemaTable.Columns.Contains("IsHidden");
+                    bool hasIdentity = schemaTable.Columns.Contains("IsIdentity");
+                    bool hasAutoincrement = schemaTable.Columns.Contains("IsAutoIncrement");
+
+                    foreach (DataRow schemaRow in schemaTable.Rows)
+                    {
+                        CSSchemaColumn schemaColumn = new CSSchemaColumn();
+
+                        if (hasHidden && !schemaRow.IsNull("IsHidden") && (bool)schemaRow["IsHidden"])
+                            schemaColumn.Hidden = true;
+
+                        schemaColumn.IsKey = (bool)schemaRow["IsKey"];
+                        schemaColumn.AllowNull = (bool)schemaRow["AllowDBNull"];
+                        schemaColumn.Name = (string)schemaRow["ColumnName"];
+                        schemaColumn.ReadOnly = (bool)schemaRow["IsReadOnly"];
+                        schemaColumn.DataType = (Type)schemaRow["DataType"];
+                        schemaColumn.Size = (int)schemaRow["ColumnSize"];
+
+                        if (hasAutoincrement && !schemaRow.IsNull("IsAutoIncrement") && (bool)schemaRow["IsAutoIncrement"])
+                            schemaColumn.Identity = true;
+
+                        if (hasIdentity && !schemaRow.IsNull("IsIdentity") && (bool)schemaRow["IsIdentity"])
+                            schemaColumn.Identity = true;
+
+                        columns.Add(schemaColumn);
+                    }
+
+                    return columns.ToArray();
+                }
+            }
+        }
 
 		protected override string QuoteField(string fieldName) { return "`" + fieldName.Replace(".", "`.`") + "`"; }
 		protected override string QuoteTable(string tableName) { return "`" + tableName.Replace(".", "`.`") + "`"; }
@@ -194,5 +240,163 @@ namespace Vici.CoolStorage
 	    {
 	        get { return false; }
 	    }
+
+        private class CSSqlConnection : ICSDbConnection
+        {
+            public readonly MySqlConnection Connection;
+
+            public CSSqlConnection(MySqlConnection connection)
+            {
+                Connection = connection;
+            }
+
+            public void Close()
+            {
+                Connection.Close();
+            }
+
+            public bool IsOpenAndReady()
+            {
+                return Connection.State == ConnectionState.Open;
+            }
+
+            public bool IsClosed()
+            {
+                return Connection.State == ConnectionState.Closed;
+            }
+
+            public ICSDbTransaction BeginTransaction(IsolationLevel isolationLevel)
+            {
+                return new CSSqlTransaction(Connection.BeginTransaction(isolationLevel));
+            }
+
+            public ICSDbTransaction BeginTransaction()
+            {
+                return new CSSqlTransaction(Connection.BeginTransaction());
+            }
+
+            public ICSDbCommand CreateCommand()
+            {
+                return new CSSqlCommand(Connection.CreateCommand());
+            }
+
+            public void Dispose()
+            {
+                Connection.Dispose();
+            }
+        }
+
+        private class CSSqlCommand : ICSDbCommand
+        {
+            public readonly MySqlCommand Command;
+
+            public CSSqlCommand(MySqlCommand command)
+            {
+                Command = command;
+            }
+
+            public string CommandText
+            {
+                get { return Command.CommandText; }
+                set { Command.CommandText = value; }
+            }
+
+            public int CommandTimeout
+            {
+                get { return Command.CommandTimeout; }
+                set { Command.CommandTimeout = value; }
+            }
+
+            public ICSDbReader ExecuteReader(CommandBehavior commandBehavior)
+            {
+                return new CSSqlReader(Command.ExecuteReader(commandBehavior));
+            }
+
+            public ICSDbReader ExecuteReader()
+            {
+                return new CSSqlReader(Command.ExecuteReader());
+            }
+
+            public int ExecuteNonQuery()
+            {
+                return Command.ExecuteNonQuery();
+            }
+
+            public void Dispose()
+            {
+                Command.Dispose();
+            }
+        }
+
+        private class CSSqlTransaction : ICSDbTransaction
+        {
+            public readonly MySqlTransaction Transaction;
+
+            public CSSqlTransaction(MySqlTransaction transaction)
+            {
+                Transaction = transaction;
+            }
+
+            public void Dispose()
+            {
+                Transaction.Dispose();
+            }
+
+            public void Commit()
+            {
+                Transaction.Commit();
+            }
+
+            public void Rollback()
+            {
+                Transaction.Rollback();
+            }
+        }
+
+        private class CSSqlReader : ICSDbReader
+        {
+            public readonly MySqlDataReader Reader;
+
+            public CSSqlReader(MySqlDataReader reader)
+            {
+                Reader = reader;
+            }
+
+            public void Dispose()
+            {
+                Reader.Dispose();
+            }
+
+            public DataTable GetSchemaTable()
+            {
+                return Reader.GetSchemaTable();
+            }
+
+            public int FieldCount
+            {
+                get { return Reader.FieldCount; }
+            }
+
+            public string GetName(int i)
+            {
+                return Reader.GetName(i);
+            }
+
+            public bool Read()
+            {
+                return Reader.Read();
+            }
+
+            public bool IsClosed
+            {
+                get { return Reader.IsClosed; }
+            }
+
+            public object this[int i]
+            {
+                get { return Reader[i]; }
+            }
+        }
+
 	}
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
+using Vici.CoolStorage.UnitTests.Data;
 
 namespace Vici.CoolStorage.UnitTests
 {
@@ -83,8 +84,6 @@ namespace Vici.CoolStorage.UnitTests
 @"CREATE TABLE tblCoolData (
             	CoolDataID text(50) PRIMARY KEY,
             	Name text(50) NULL)");
-
-
         }
     }
 }

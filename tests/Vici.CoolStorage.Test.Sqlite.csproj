@@ -45,17 +45,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vici.CoolStorage, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>References\Vici.CoolStorage.dll</HintPath>
-    </Reference>
-    <Reference Include="Vici.CoolStorage.SQLite">
-      <HintPath>References\Vici.CoolStorage.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="Vici.Core, Version=1.0.0.1031, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>References\Vici.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonTests.cs" />
@@ -64,6 +53,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\drivers\sqlite\Vici.CoolStorage.SQLite.csproj">
+      <Project>{796286C2-CBBB-40F8-94A7-CFAD35DE1508}</Project>
+      <Name>Vici.CoolStorage.SQLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\library\Library\Vici.CoolStorage.csproj">
+      <Project>{CACF1024-EC84-4601-A4F7-4203320870DC}</Project>
+      <Name>Vici.CoolStorage</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

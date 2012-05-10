@@ -43,8 +43,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vici.Core.M4A">
-      <HintPath>..\References\Vici.Core\Vici.Core.M4A.dll</HintPath>
+    <Reference Include="Vici.Core.M4A, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\Vici.Core\Vici.Core.M4A.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
