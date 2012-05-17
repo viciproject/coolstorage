@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Vici.CoolStorage.Oracle")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Oracle Driver for Vici CoolStorage")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Activa Consult")]
-[assembly: AssemblyProduct("CoolStorage.Oracle")]
-[assembly: AssemblyCopyright("Copyright © Philippe Leybaert 2010")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Vici.CoolStorage.Oracle")]
+[assembly: AssemblyCopyright("Copyright © 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
