@@ -37,7 +37,7 @@ namespace Vici.CoolStorage
 {
     internal enum CSObjectDataState
     {
-        New, KeysLoaded, Loaded, Modified, Deleted, MarkedForDelete
+        New, Loaded, Modified, Deleted, MarkedForDelete
     }
 
     internal class PrefetchField
@@ -429,7 +429,7 @@ namespace Vici.CoolStorage
                     {
                         Fire_ObjectCreated();
 
-                        Reload();
+                        //Reload();
                     }
                     else
                     {
@@ -655,6 +655,7 @@ namespace Vici.CoolStorage
         }
 
 
+/*
         /// <summary>
         /// Reloads the object from the database, overwriting any changes you have made to the object
         /// </summary>
@@ -668,6 +669,7 @@ namespace Vici.CoolStorage
 
             _dataState = CSObjectDataState.KeysLoaded;
         }
+*/
 
         internal object PrimaryKeyValue
         {

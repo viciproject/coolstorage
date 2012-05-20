@@ -78,15 +78,7 @@ namespace Vici.CoolStorage
 			get
 			{
 				if (_valueState == CSFieldValueState.Unread)
-				{
-					if (_csObject.DataState == CSObjectDataState.KeysLoaded)
-					{
-						_csObject.Read();
-					}
-
 					_csObject.ReadField(SchemaField);
-
-				}
 
 				return _value;
 			}
