@@ -22,6 +22,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 //=============================================================================
+using Vici.Core;
+
+
 #endregion
 
 using System;
@@ -173,45 +176,38 @@ namespace Vici.CoolStorage
         {
             using (ICSDbConnection newConn = CreateConnection())
             {
-                ICSDbCommand dbCommand = newConn.CreateCommand();
+				List<CSSchemaColumn> columns = new List<CSSchemaColumn>();
 
-                dbCommand.CommandText = "select * from " + QuoteTable(tableName);
+				DataTable schemaTable = ((CSSqliteConnection)newConn).GetSchema(tableName);
 
-                using (CSSqliteReader dataReader = (CSSqliteReader)dbCommand.ExecuteReader(CommandBehavior.SchemaOnly | CommandBehavior.KeyInfo))
+                bool hasHidden = schemaTable.Columns.Contains("IsHidden");
+                bool hasIdentity = schemaTable.Columns.Contains("IsIdentity");
+                bool hasAutoincrement = schemaTable.Columns.Contains("IsAutoIncrement");
+
+                foreach (DataRow schemaRow in schemaTable.Rows)
                 {
-                    List<CSSchemaColumn> columns = new List<CSSchemaColumn>();
+                    CSSchemaColumn schemaColumn = new CSSchemaColumn();
 
-                    DataTable schemaTable = dataReader.Reader.GetSchemaTable();
+                    if (hasHidden && !schemaRow.IsNull("IsHidden") && (bool)schemaRow["IsHidden"])
+                        schemaColumn.Hidden = true;
 
-                    bool hasHidden = schemaTable.Columns.Contains("IsHidden");
-                    bool hasIdentity = schemaTable.Columns.Contains("IsIdentity");
-                    bool hasAutoincrement = schemaTable.Columns.Contains("IsAutoIncrement");
+                    schemaColumn.IsKey = (bool)schemaRow["IsKey"];
+                    schemaColumn.AllowNull = (bool)schemaRow["AllowDBNull"];
+                    schemaColumn.Name = (string)schemaRow["ColumnName"];
+                    schemaColumn.ReadOnly = (bool)schemaRow["IsReadOnly"];
+                    schemaColumn.DataType = (Type)schemaRow["DataType"];
+                    schemaColumn.Size = (int)schemaRow["ColumnSize"];
 
-                    foreach (DataRow schemaRow in schemaTable.Rows)
-                    {
-                        CSSchemaColumn schemaColumn = new CSSchemaColumn();
+                    if (hasAutoincrement && !schemaRow.IsNull("IsAutoIncrement") && (bool)schemaRow["IsAutoIncrement"])
+                        schemaColumn.Identity = true;
 
-                        if (hasHidden && !schemaRow.IsNull("IsHidden") && (bool)schemaRow["IsHidden"])
-                            schemaColumn.Hidden = true;
+                    if (hasIdentity && !schemaRow.IsNull("IsIdentity") && (bool)schemaRow["IsIdentity"])
+                        schemaColumn.Identity = true;
 
-                        schemaColumn.IsKey = (bool)schemaRow["IsKey"];
-                        schemaColumn.AllowNull = (bool)schemaRow["AllowDBNull"];
-                        schemaColumn.Name = (string)schemaRow["ColumnName"];
-                        schemaColumn.ReadOnly = (bool)schemaRow["IsReadOnly"];
-                        schemaColumn.DataType = (Type)schemaRow["DataType"];
-                        schemaColumn.Size = (int)schemaRow["ColumnSize"];
-
-                        if (hasAutoincrement && !schemaRow.IsNull("IsAutoIncrement") && (bool)schemaRow["IsAutoIncrement"])
-                            schemaColumn.Identity = true;
-
-                        if (hasIdentity && !schemaRow.IsNull("IsIdentity") && (bool)schemaRow["IsIdentity"])
-                            schemaColumn.Identity = true;
-
-                        columns.Add(schemaColumn);
-                    }
-
-                    return columns.ToArray();
+                    columns.Add(schemaColumn);
                 }
+
+                return columns.ToArray();
             }
         }
 
@@ -248,6 +244,94 @@ namespace Vici.CoolStorage
             {
                 Connection.Close();
             }
+
+			public DataTable GetSchema(string tableName)
+			{
+				DataTable dataTable = new DataTable();
+
+				dataTable.Columns.Add("IsKey",typeof(bool));
+				dataTable.Columns.Add("AllowDBNull",typeof(bool));
+				dataTable.Columns.Add("ColumnName",typeof(string));
+				dataTable.Columns.Add("DataType",typeof(Type));
+				dataTable.Columns.Add("IsReadOnly",typeof(bool));
+				dataTable.Columns.Add("ColumnSize",typeof(int));
+				dataTable.Columns.Add("IsAutoIncrement",typeof(bool));
+
+				List<string> autoColumns = new List<string>();
+
+				using (SqliteCommand cmd = Connection.CreateCommand())
+				{
+					cmd.CommandText = "select sql from sqlite_master where type='table' and name=@tablename";
+					cmd.Parameters.Add(new SqliteParameter("tablename",tableName));
+					
+					string sql = (string) cmd.ExecuteScalar();
+	
+					Regex regex = new Regex(@"[\(,]\s*(?<column>[a-z0-9_]+).*?AUTOINCREMENT",RegexOptions.IgnoreCase);
+	
+					Match m = regex.Match(sql);
+	
+					if (m.Success)
+					{
+						autoColumns.Add(m.Groups["column"].Value.ToUpper());
+					}
+				}
+
+				using (SqliteCommand cmd = Connection.CreateCommand())
+				{
+					cmd.CommandText = "pragma table_info (" + tableName + ")";
+					
+					using (SqliteDataReader reader = cmd.ExecuteReader()) 
+					{
+						while(reader.Read())
+						{
+							DataRow row = dataTable.NewRow();
+	
+							string columnName = (string) reader["name"];
+	
+							row["IsKey"] = reader["pk"].Convert<bool>();
+							row["AllowDBNull"] = !reader["notnull"].Convert<bool>();
+							row["ColumnName"] = columnName;
+							row["IsReadOnly"] = false;
+							row["ColumnSize"] = 1000;
+	
+							Type dataType = null;
+	
+							string dbType = (string) reader["type"];
+	
+							int paren = dbType.IndexOf('(');
+	
+							if (paren > 0)
+								dbType = dbType.Substring(0,paren);
+	
+							dbType = dbType.ToUpper();
+	
+							switch (dbType) 
+							{
+								case "TEXT": dataType = typeof(string); break;
+								case "VARCHAR": dataType = typeof(string); break;
+								case "INTEGER": dataType = typeof(int); break;
+								case "BOOL": dataType = typeof(bool); break;
+								case "DOUBLE": dataType = typeof(double); break;
+								case "FLOAT": dataType = typeof(double); break;
+								case "REAL": dataType = typeof(double); break;
+								case "CHAR": dataType = typeof(string); break;
+								case "BLOB": dataType = typeof(byte[]); break;
+								case "NUMERIC": dataType = typeof(decimal); break;
+								case "DATETIME": dataType = typeof(DateTime); break;
+							}
+	
+							row["DataType"] = dataType;
+	
+							row["IsAutoIncrement"] = autoColumns.Contains(columnName.ToUpper());
+	
+	
+							dataTable.Rows.Add(row);
+						}
+					}
+				}
+
+				return dataTable;
+			}
 
             public bool IsOpenAndReady()
             {
