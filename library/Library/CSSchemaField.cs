@@ -61,7 +61,7 @@ namespace Vici.CoolStorage
 
             _fieldType = MappedColumn.DataType;
 
-            _realType = _fieldType.GetRealType();
+		    _realType = _fieldType.Inspector().RealType;
 		}
 
 		internal CSSchemaField(PropertyInfo propInfo , CSSchema schema)
@@ -69,7 +69,7 @@ namespace Vici.CoolStorage
 			_propertyInfo = propInfo;
 			_schema = schema;
             _fieldType = _propertyInfo.PropertyType;
-		    _realType = _fieldType.GetRealType();
+		    _realType = _fieldType.Inspector().RealType;
 
 			RelationAttribute  attRelation = (RelationAttribute) Attribute.GetCustomAttribute(propInfo,typeof(RelationAttribute),true);
 			
