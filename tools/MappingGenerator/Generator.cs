@@ -14,10 +14,6 @@ namespace MappingGenerator
 	    {
             switch (dbType.ToUpper())
             {
-                case "VISTADB":
-                    provider = new VistaDBHandler();
-                    break;
-
                 case "SQLSERVER":
                     provider = new SQLDBHandler();
                     break;
@@ -96,7 +92,7 @@ namespace MappingGenerator
                 using (var writer = File.CreateText(Path.Combine(directory, @"Relations\" + table.ClassName + ".cs")))
                 {
                     writer.WriteLine("using System;");
-                    writer.WriteLine("using Activa.CoolStorage;");
+                    writer.WriteLine("using Vici.CoolStorage;");
                     writer.WriteLine();
 
                     if (ns != null)

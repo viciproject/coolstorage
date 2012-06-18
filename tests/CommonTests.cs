@@ -480,9 +480,9 @@ namespace Vici.CoolStorage.UnitTests
                 order.Customer = cust3;
                 order.Save();
 
-                cust1.Reload();
-                cust2.Reload();
-                cust3.Reload();
+                cust1 = Customer.Read(cust1.CustomerID);
+                cust2 = Customer.Read(cust2.CustomerID);
+                cust3 = Customer.Read(cust3.CustomerID);
 
                 Assert.AreEqual(2,cust1.SalesPeople.Count);
                 Assert.AreEqual(1,cust2.SalesPeople.Count);

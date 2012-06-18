@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MappingGenerator", "MappingGenerator.csproj", "{3F2BD4C0-D4CC-4D3D-A2CD-6A9149462E3A}"
 EndProject
 Global

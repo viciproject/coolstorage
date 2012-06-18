@@ -107,8 +107,8 @@
     <Compile Include="CSTransaction.cs" />
     <Compile Include="CSTypedQuery.cs" />
     <Compile Include="Mono4Android\AndroidMocks.cs" />
-    <Compile Include="Mono4Android\CSConfig.cs" />
-    <Compile Include="Mono4Android\CSDataProviderSQLite.cs" />
+    <Compile Include="MonoTouch\CSConfig.cs" />
+    <Compile Include="MonoTouch\CSDataProviderSQLite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
   </ItemGroup>
