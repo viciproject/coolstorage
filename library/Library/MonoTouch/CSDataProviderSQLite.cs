@@ -266,7 +266,7 @@ namespace Vici.CoolStorage
 					
 					string sql = (string) cmd.ExecuteScalar();
 	
-					Regex regex = new Regex(@"[\(,]\s*(?<column>[a-z0-9_]+).*?AUTOINCREMENT",RegexOptions.IgnoreCase);
+					Regex regex = new Regex(@"[\(,]\s*((?<column>[A-Za-z][A-Za-z0-9]*)|""(?<column>[^""]+)"")\s+.*?AUTOINCREMENT",RegexOptions.IgnoreCase);
 	
 					Match m = regex.Match(sql);
 	
