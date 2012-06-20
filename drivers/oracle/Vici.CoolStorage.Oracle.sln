@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vici.CoolStorage.Oracle", "Vici.CoolStorage.Oracle.csproj", "{53AE5122-64E0-11DF-9FFE-65D1DED72085}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vici.CoolStorage", "..\..\library\Library\Vici.CoolStorage.csproj", "{CACF1024-EC84-4601-A4F7-4203320870DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{53AE5122-64E0-11DF-9FFE-65D1DED72085}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53AE5122-64E0-11DF-9FFE-65D1DED72085}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53AE5122-64E0-11DF-9FFE-65D1DED72085}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CACF1024-EC84-4601-A4F7-4203320870DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CACF1024-EC84-4601-A4F7-4203320870DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CACF1024-EC84-4601-A4F7-4203320870DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CACF1024-EC84-4601-A4F7-4203320870DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

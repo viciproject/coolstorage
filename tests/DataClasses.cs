@@ -71,7 +71,7 @@ namespace Vici.CoolStorage.UnitTests.Data
     [MapTo("tblCustomers")]
     public class Customer2 : CSObject<Customer2, int>
     {
-        [Sequence("Customer_seq", Identity = true)]
+       // [Sequence("Customer_seq", Identity = true)]
         public int CustomerID { get { return (int) GetField("CustomerID");  } }
         public string Name { get { return (string) GetField("Name");  } set { SetField("Name",value); } }
 
@@ -86,7 +86,7 @@ namespace Vici.CoolStorage.UnitTests.Data
 	[MapTo("tblCustomers")]
 	public abstract partial class Customer : CSObject<Customer,int>
 	{
-        [Sequence("Customer_seq", Identity = true)]
+        //[Sequence("Customer_seq", Identity = true)]
 		public abstract int CustomerID { get; }
 		public abstract string Name { get; set; }
 
