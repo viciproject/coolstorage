@@ -73,10 +73,7 @@ namespace Vici.CoolStorage
             if (CurrentTransaction != null)
                 sqlCommand.Transaction = ((CSSqliteTransaction)CurrentTransaction).Transaction;
 
-            if (sqlQuery.ToUpper().StartsWith("DELETE ") || sqlQuery.ToUpper().StartsWith("SELECT ") || sqlQuery.ToUpper().StartsWith("UPDATE ") || sqlQuery.ToUpper().StartsWith("INSERT ") || sqlQuery.ToUpper().StartsWith("CREATE "))
-                sqlCommand.CommandType = CommandType.Text;
-            else
-                sqlCommand.CommandType = CommandType.StoredProcedure;
+            sqlCommand.CommandType = CommandType.Text;
 
             sqlCommand.CommandText = Regex.Replace(sqlQuery, @"@(?<name>[a-z0-9A-Z_]+)", "@${name}");
 
