@@ -13,7 +13,7 @@
     <iconUrl>http://dstyler.com/vici/32x32/im-_IconPlain100-w32-h32.png</iconUrl>
     <tags>vici cooolstorage orm wp7 wp windowsphone mono monotouch monodroid sql sqlite</tags>
     <dependencies>
-       <dependency id="vici.core" version="1.0.0" />
+       <dependency id="vici.core" version="1.0.2" />
     </dependencies>
   </metadata>
 </package>
