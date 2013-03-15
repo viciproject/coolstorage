@@ -32,6 +32,9 @@ using System.Threading;
 
 namespace Vici.CoolStorage
 {
+    /// <summary>
+    /// Configure CoolStorages behavior
+    /// </summary>
     public static partial class CSConfig
     {
         internal const string DEFAULT_CONTEXTNAME = "_DEFAULT_";
@@ -49,7 +52,32 @@ namespace Vici.CoolStorage
         private static void ReadConfig()
         {
 #if !MONOTOUCH && !WINDOWS_PHONE && !SILVERLIGHT && !MONO4ANDROID
-            NameValueCollection configurationSection = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("CoolStorage");
+            object configurationSection = System.Configuration.ConfigurationManager.GetSection("CoolStorage");
+            if (!ReadCustomConfig(configurationSection))
+                ReadLegacyConfig(configurationSection);
+#endif
+        }
+
+        private static bool ReadCustomConfig(object config)
+        {
+            CSConfigSection configurationSection = config as CSConfigSection;
+            if (configurationSection == null)
+                return false;
+
+            _useTransactionScope = configurationSection.UseTransactionScope;
+
+            if (configurationSection.CommandTimeout > 0)
+                _commandTimeout = configurationSection.CommandTimeout;
+
+            _doLogging = configurationSection.EnableLogging;
+            _logFileName = configurationSection.LogFilename;
+
+            return true;
+        }
+
+        private static void ReadLegacyConfig(object config)
+        {
+            NameValueCollection configurationSection = config as NameValueCollection;
 
             if (configurationSection == null)
                 return;
@@ -67,7 +95,6 @@ namespace Vici.CoolStorage
 
             if (configurationSection["LogFile"] != null)
                 _logFileName = configurationSection["LogFile"];
-#endif
         }
 
         public static bool UseTransactionScope
@@ -162,7 +189,7 @@ namespace Vici.CoolStorage
                 _globalDbMapChanged[contextName] = true;
             }
         }
-		
+        
         public static void ChangeTableMapping(Type type, string tableName, string contextName)
         {
             CSSchema.ChangeMapTo(type, tableName, contextName);
@@ -222,28 +249,19 @@ namespace Vici.CoolStorage
                     if (!_globalDbMap.ContainsKey(contextName))
                     {
 #if !MONOTOUCH && !WINDOWS_PHONE && !SILVERLIGHT && !MONO4ANDROID
-                        NameValueCollection configurationSection = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("CoolStorage");
+                        object configurationSection = System.Configuration.ConfigurationManager.GetSection("CoolStorage");
+                        string[] settings = GetCustomConfig(configurationSection, contextName);
+                        if (settings == null)
+                            GetLegacyConfig(configurationSection, contextName);
 
-                        if (configurationSection != null)
+                        if (settings != null)
                         {
-                            string key = (contextName == DEFAULT_CONTEXTNAME) ? "Connection" : ("Connection." + contextName);
+                            Type type = Type.GetType(settings[0]);
 
-                            string value = configurationSection[key];
+                            if (type == null)
+                                throw new CSException("Unable to load type <" + settings[0] + ">");
 
-                            if (value.IndexOf('/') > 0)
-                            {
-                                string dbType = value.Substring(0, value.IndexOf('/')).Trim();
-                                string connString = value.Substring(value.IndexOf('/') + 1).Trim();
-
-                                string typeName = "Vici.CoolStorage." + dbType;
-
-                                Type type = Type.GetType(typeName);
-
-                                if (type == null)
-                                    throw new CSException("Unable to load type <" + typeName + ">");
-
-                                _globalDbMap[contextName] = (CSDataProvider)Activator.CreateInstance(type, new object[] { connString });
-                            }
+                            _globalDbMap[contextName] = (CSDataProvider)Activator.CreateInstance(type, new object[] { settings[1] });
                         }
 #endif
 
@@ -259,6 +277,44 @@ namespace Vici.CoolStorage
                 _threadDbMap[contextName] = db;
 
                 return db;
+            }
+
+            private string[] GetCustomConfig(object config, string contextName)
+            {
+                CSConfigSection configurationSection = config as CSConfigSection;
+                if (configurationSection == null)
+                    return null;
+
+                string key = (contextName == DEFAULT_CONTEXTNAME) ? configurationSection.DefaultConnection : contextName;
+
+                if (configurationSection.Connections[key] == null)
+                    return null;
+
+                var result = new string[2];
+                result[0] = configurationSection.Connections[key].ProviderType;
+                result[1] = System.Configuration.ConfigurationManager.ConnectionStrings[configurationSection.Connections[key].ConnectionString].ConnectionString;
+
+                return result;
+            }
+
+            private string[] GetLegacyConfig(object config, string contextName)
+            {
+                NameValueCollection configurationSection = config as NameValueCollection;
+                if (configurationSection == null)
+                    return null;
+
+                string key = (contextName == DEFAULT_CONTEXTNAME) ? "Connection" : ("Connection." + contextName);
+                string value = configurationSection[key];
+                string[] result =null;
+
+                if (value.IndexOf('/') > 0)
+                {
+                    string dbType = value.Substring(0, value.IndexOf('/')).Trim();
+                    result[0] = "Vici.CoolStorage." + dbType;
+                    result[1] = value.Substring(value.IndexOf('/') + 1).Trim();
+                }
+
+                return result;
             }
 
             private void CleanupBehind()
