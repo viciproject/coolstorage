@@ -58,6 +58,7 @@ namespace Vici.CoolStorage
 #endif
         }
 
+#if !MONOTOUCH && !WINDOWS_PHONE && !SILVERLIGHT && !MONO4ANDROID
         private static bool ReadCustomConfig(object config)
         {
             CSConfigSection configurationSection = config as CSConfigSection;
@@ -96,6 +97,7 @@ namespace Vici.CoolStorage
             if (configurationSection["LogFile"] != null)
                 _logFileName = configurationSection["LogFile"];
         }
+#endif
 
         public static bool UseTransactionScope
         {
@@ -279,6 +281,7 @@ namespace Vici.CoolStorage
                 return db;
             }
 
+#if !MONOTOUCH && !WINDOWS_PHONE && !SILVERLIGHT && !MONO4ANDROID
             private string[] GetCustomConfig(object config, string contextName)
             {
                 CSConfigSection configurationSection = config as CSConfigSection;
@@ -316,7 +319,7 @@ namespace Vici.CoolStorage
 
                 return result;
             }
-
+#endif
             private void CleanupBehind()
             {
                 _callingThread.Join();
