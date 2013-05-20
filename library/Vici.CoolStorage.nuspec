@@ -3,7 +3,7 @@
   <metadata>
     <id>vici.coolstorage</id>
     <title>Vici CooolStorage</title>
-    <version>1.5.0</version>
+    <version>1.5.3</version>
     <authors>Philippe Leybaert</authors>
     <owners>Philippe Leybaert</owners>
     <description>Lightweight ActiveRecord-inspired ORM for .NET, Windows Phone and Mono(Touch/Droid)</description>
@@ -13,7 +13,7 @@
     <iconUrl>http://dstyler.com/vici/32x32/im-_IconPlain100-w32-h32.png</iconUrl>
     <tags>vici cooolstorage orm wp7 wp windowsphone mono monotouch monodroid sql sqlite</tags>
     <dependencies>
-       <dependency id="vici.core" version="1.0.2" />
+       <dependency id="vici.core" version="2.0.0" />
     </dependencies>
   </metadata>
 </package>
