@@ -70,10 +70,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vici.Core, Version=1.0.1.1076, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References\Vici.Core\Vici.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\BooleanValueAttribute.cs" />
@@ -100,6 +96,7 @@
     <Compile Include="Attributes\TrimAttribute.cs" />
     <Compile Include="CSAggregate.cs" />
     <Compile Include="Attributes\IdentityAttribute.cs" />
+    <Compile Include="CSConfigSection.cs" />
     <Compile Include="CSNameGenerator.cs" />
     <Compile Include="CSConfig.cs" />
     <Compile Include="CSDatabase.cs" />
@@ -163,6 +160,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Library\Vici.Core.csproj">
+      <Project>{472e40ce-377d-4c5d-b755-fa11dcda2347}</Project>
+      <Name>Vici.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
