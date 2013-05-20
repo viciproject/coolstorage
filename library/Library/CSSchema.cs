@@ -218,6 +218,9 @@ namespace Vici.CoolStorage
 
             foreach (var column in columns)
             {
+                if (column.Hidden)
+                    continue;
+
                 if (column.IsKey)
                     _keyColumnList.Add(column);
 
