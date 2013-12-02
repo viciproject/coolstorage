@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2DD3D8D0-7CEC-4915-B279-5DED87FA5169}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Vici.CoolStorage.PCL</RootNamespace>
+    <AssemblyName>Vici.CoolStorage.PCL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile78</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;PCL TRUE WIN32 _MSC_VER NDEBUG NO_TCL SQLITE_ASCII SQLITE_DISABLE_LFS SQLITE_HAS_CODEC SQLITE_MEM_POOL SQLITE_MUTEX_OMIT SQLITE_OMIT_AUTHORIZATION SQLITE_OMIT_DEPRECATED SQLITE_OMIT_GET_TABLE SQLITE_OMIT_INCRBLOB SQLITE_OMIT_LOOKASIDE SQLITE_OMIT_SHARED_CACHE SQLITE_OMIT_UTF16 SQLITE_OMIT_VIRTUALTABLE SQLITE_OMIT_WAL SQLITE_OS_WIN SQLITE_SYSTEM_MALLOC VDBE_PROFILE_OFF SQLITE_SILVERLIGHT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;PCL TRUE WIN32 _MSC_VER NDEBUG NO_TCL SQLITE_ASCII SQLITE_DISABLE_LFS SQLITE_HAS_CODEC SQLITE_MEM_POOL SQLITE_MUTEX_OMIT SQLITE_OMIT_AUTHORIZATION SQLITE_OMIT_DEPRECATED SQLITE_OMIT_GET_TABLE SQLITE_OMIT_INCRBLOB SQLITE_OMIT_LOOKASIDE SQLITE_OMIT_SHARED_CACHE SQLITE_OMIT_UTF16 SQLITE_OMIT_VIRTUALTABLE SQLITE_OMIT_WAL SQLITE_OS_WIN SQLITE_SYSTEM_MALLOC VDBE_PROFILE_OFF SQLITE_SILVERLIGHT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
+    <Compile Include="Source\Attributes\BooleanValueAttribute.cs" />
+    <Compile Include="Source\Attributes\ClientGeneratedAttribute.cs" />
+    <Compile Include="Source\Attributes\DefaultSortAttribute.cs" />
+    <Compile Include="Source\Attributes\DefaultSortExpressionAttribute.cs" />
+    <Compile Include="Source\Attributes\IdentityAttribute.cs" />
+    <Compile Include="Source\Attributes\LazyAttribute.cs" />
+    <Compile Include="Source\Attributes\ManyToManyAttribute.cs" />
+    <Compile Include="Source\Attributes\ManyToOneAttribute.cs" />
+    <Compile Include="Source\Attributes\MapToAttribute.cs" />
+    <Compile Include="Source\Attributes\NoCreateAttribute.cs" />
+    <Compile Include="Source\Attributes\NotMappedAttribute.cs" />
+    <Compile Include="Source\Attributes\NullValueAttribute.cs" />
+    <Compile Include="Source\Attributes\OneToManyAttribute.cs" />
+    <Compile Include="Source\Attributes\OneToOneAttribute.cs" />
+    <Compile Include="Source\Attributes\OptimisticLockAttribute.cs" />
+    <Compile Include="Source\Attributes\PrefetchAttribute.cs" />
+    <Compile Include="Source\Attributes\QueryExpressionAttribute.cs" />
+    <Compile Include="Source\Attributes\RelationAttribute.cs" />
+    <Compile Include="Source\Attributes\SequenceAttribute.cs" />
+    <Compile Include="Source\Attributes\ServerGeneratedAttribute.cs" />
+    <Compile Include="Source\Attributes\SoftDeleteAttribute.cs" />
+    <Compile Include="Source\Attributes\ToStringAttribute.cs" />
+    <Compile Include="Source\Attributes\TrimAttribute.cs" />
+    <Compile Include="Source\CSAggregate.cs" />
+    <Compile Include="Source\CSConfig.cs" />
+    <Compile Include="Source\CSDatabase.cs" />
+    <Compile Include="Source\CSDataProvider.cs" />
+    <Compile Include="Source\CSException.cs" />
+    <Compile Include="Source\CSExpressionParser.cs" />
+    <Compile Include="Source\CSFactory.cs" />
+    <Compile Include="Source\CSFieldExpression.cs" />
+    <Compile Include="Source\CSFieldValue.cs" />
+    <Compile Include="Source\CSFieldValueCollection.cs" />
+    <Compile Include="Source\CSFilter.cs" />
+    <Compile Include="Source\CSHelper.cs" />
+    <Compile Include="Source\CSJoin.cs" />
+    <Compile Include="Source\CSJoinList.cs" />
+    <Compile Include="Source\CSList.cs" />
+    <Compile Include="Source\CSListGeneric.cs" />
+    <Compile Include="Source\CSNameGenerator.cs" />
+    <Compile Include="Source\CSObject.cs" />
+    <Compile Include="Source\CSObjectEventHandler.cs" />
+    <Compile Include="Source\CSObjectGeneric.cs" />
+    <Compile Include="Source\CSObjectStringConverter.cs" />
+    <Compile Include="Source\CSParameter.cs" />
+    <Compile Include="Source\CSParameterCollection.cs" />
+    <Compile Include="Source\CSRelation.cs" />
+    <Compile Include="Source\CSSchema.cs" />
+    <Compile Include="Source\CSSchemaColumn.cs" />
+    <Compile Include="Source\CSSchemaColumnCollection.cs" />
+    <Compile Include="Source\CSSchemaField.cs" />
+    <Compile Include="Source\CSSchemaFieldCollection.cs" />
+    <Compile Include="Source\CSSort.cs" />
+    <Compile Include="Source\CSStringCollection.cs" />
+    <Compile Include="Source\CSTable.cs" />
+    <Compile Include="Source\CSTransaction.cs" />
+    <Compile Include="Source\CSTypedQuery.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Source\Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Vici.Core.PCL">
+      <HintPath>..\References\Vici.Core.PCL.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

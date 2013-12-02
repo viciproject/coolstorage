@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{10CEF250-CBC2-413D-9571-4839AF67D78F}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Vici.CoolStorage.WP8.Sqlite</RootNamespace>
+    <AssemblyName>Vici.CoolStorage.WP8.Sqlite</AssemblyName>
+    <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;SQLITE_SILVERLIGHT NET_40 TRUE WIN32 _MSC_VER SQLITE_DEBUG NDEBUG NO_TCL SQLITE_ASCII SQLITE_DISABLE_LFS SQLITE_HAS_CODEC SQLITE_MEM_POOL SQLITE_MUTEX_OMIT SQLITE_OMIT_AUTHORIZATION SQLITE_OMIT_DEPRECATED SQLITE_OMIT_GET_TABLE SQLITE_OMIT_INCRBLOB SQLITE_OMIT_LOOKASIDE SQLITE_OMIT_SHARED_CACHE SQLITE_OMIT_UTF16 SQLITE_OMIT_VIRTUALTABLE SQLITE_OMIT_WAL SQLITE_OS_WIN SQLITE_SYSTEM_MALLOC VDBE_PROFILE_OFF  WINDOWS_PHONE SQLITE_ENABLE_COLUMN_METADATA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE;SQLITE_SILVERLIGHT NET_40 TRUE WIN32 _MSC_VER SQLITE_DEBUG NDEBUG NO_TCL SQLITE_ASCII SQLITE_DISABLE_LFS SQLITE_HAS_CODEC SQLITE_MEM_POOL SQLITE_MUTEX_OMIT SQLITE_OMIT_AUTHORIZATION SQLITE_OMIT_DEPRECATED SQLITE_OMIT_GET_TABLE SQLITE_OMIT_INCRBLOB SQLITE_OMIT_LOOKASIDE SQLITE_OMIT_SHARED_CACHE SQLITE_OMIT_UTF16 SQLITE_OMIT_VIRTUALTABLE SQLITE_OMIT_WAL SQLITE_OS_WIN SQLITE_SYSTEM_MALLOC VDBE_PROFILE_OFF  WINDOWS_PHONE SQLITE_ENABLE_COLUMN_METADATA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\x86\Debug</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;SQLITE_SILVERLIGHT NET_40 TRUE WIN32 _MSC_VER SQLITE_DEBUG NDEBUG NO_TCL SQLITE_ASCII SQLITE_DISABLE_LFS SQLITE_HAS_CODEC SQLITE_MEM_POOL SQLITE_MUTEX_OMIT SQLITE_OMIT_AUTHORIZATION SQLITE_OMIT_DEPRECATED SQLITE_OMIT_GET_TABLE SQLITE_OMIT_INCRBLOB SQLITE_OMIT_LOOKASIDE SQLITE_OMIT_SHARED_CACHE SQLITE_OMIT_UTF16 SQLITE_OMIT_VIRTUALTABLE SQLITE_OMIT_WAL SQLITE_OS_WIN SQLITE_SYSTEM_MALLOC VDBE_PROFILE_OFF  WINDOWS_PHONE SQLITE_ENABLE_COLUMN_METADATA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE;SQLITE_SILVERLIGHT NET_40 TRUE WIN32 _MSC_VER SQLITE_DEBUG NDEBUG NO_TCL SQLITE_ASCII SQLITE_DISABLE_LFS SQLITE_HAS_CODEC SQLITE_MEM_POOL SQLITE_MUTEX_OMIT SQLITE_OMIT_AUTHORIZATION SQLITE_OMIT_DEPRECATED SQLITE_OMIT_GET_TABLE SQLITE_OMIT_INCRBLOB SQLITE_OMIT_LOOKASIDE SQLITE_OMIT_SHARED_CACHE SQLITE_OMIT_UTF16 SQLITE_OMIT_VIRTUALTABLE SQLITE_OMIT_WAL SQLITE_OS_WIN SQLITE_SYSTEM_MALLOC VDBE_PROFILE_OFF  WINDOWS_PHONE SQLITE_ENABLE_COLUMN_METADATA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|ARM' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\ARM\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|ARM' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\ARM\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CS.cs" />
+    <Compile Include="CSDataProviderSqliteWinRT.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLiteDriver\Client\SqliteCommand.cs" />
+    <Compile Include="SQLiteDriver\Client\SqliteConnection.cs" />
+    <Compile Include="SQLiteDriver\Client\SqliteDataReader.cs" />
+    <Compile Include="SQLiteDriver\Client\SqliteError.cs" />
+    <Compile Include="SQLiteDriver\Client\SqliteExceptions.cs" />
+    <Compile Include="SQLiteDriver\Client\SqliteParameter.cs" />
+    <Compile Include="SQLiteDriver\Client\SqliteParameterCollection.cs" />
+    <Compile Include="SQLiteDriver\Client\SqliteTransaction.cs" />
+    <Compile Include="SQLiteDriver\sqlite\alter_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\analyze_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\attach_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\auth_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\backup_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\bitvec_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\btmutex_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\BtreeInt_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\btree_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\Btree_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\build_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\callback_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\complete_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\crypto.cs" />
+    <Compile Include="SQLiteDriver\sqlite\ctime_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\date_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\Delegates.cs" />
+    <Compile Include="SQLiteDriver\sqlite\delete_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\expr_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\fault_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\fkey_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\func_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\global_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\hash_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\Hash_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\hwtime_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\insert_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\journal_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\keywordhash_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\legacy_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\loadext_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\main_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\malloc_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\memjournal_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\mem_Pool.cs" />
+    <Compile Include="SQLiteDriver\sqlite\mutex_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\mutex_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\mutex_noop_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\mutex_w32.cs" />
+    <Compile Include="SQLiteDriver\sqlite\notify_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\opcodes_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\opcodes_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\os_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\os_common_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\os_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\os_win_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\pager_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\pager_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\parse_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\parse_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\pcache1_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\pcache_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\pcache_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\pragma_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\prepare_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\printf_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\random_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\resolve_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\rowset_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\select_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\sqlite3_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\sqliteInt_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\sqliteLimit_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\status_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\table_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\tokenize_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\trigger_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\update_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\utf_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\util_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\vacuum_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\vdbeapi_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\vdbeaux_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\vdbeblob_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\VdbeInt_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\vdbemem_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\vdbetrace_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\vdbe_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\Vdbe_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\vtab_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\walker_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\wal_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\wal_h.cs" />
+    <Compile Include="SQLiteDriver\sqlite\where_c.cs" />
+    <Compile Include="SQLiteDriver\sqlite\_Custom.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbCommand.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbConnection.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbDataReader.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbDataRecord.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbEnumerator.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbException.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbParameter.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbParameterCollection.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbTransaction.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\DbTypes.cs" />
+    <Compile Include="SQLiteDriver\System.Data.Common\SchemaInfo.cs" />
+    <Compile Include="SQLiteDriver\System.Data\CommandBehavior.cs" />
+    <Compile Include="SQLiteDriver\System.Data\CommandType.cs" />
+    <Compile Include="SQLiteDriver\System.Data\ConnectionState.cs" />
+    <Compile Include="SQLiteDriver\System.Data\DbType.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IDataParameter.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IDataParameterCollection.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IDataReader.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IDataRecord.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IDbCommand.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IDbConnection.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IDbDataParameter.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IDbTransaction.cs" />
+    <Compile Include="SQLiteDriver\System.Data\IsolationLevel.cs" />
+    <Compile Include="SQLiteDriver\System.Data\ParameterDirection.cs" />
+    <Compile Include="SQLiteDriver\System\ApplicationException.cs" />
+    <Compile Include="SQLiteDriver\System\DBNull.cs" />
+    <Compile Include="SQLiteDriver\System\DuplicateNameException.cs" />
+    <Compile Include="SQLiteDriver\System\ICloneable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Vici.CoolStorage.PCL">
+      <HintPath>..\..\..\References\Vici.CoolStorage.PCL.dll</HintPath>
+    </Reference>
+    <Reference Include="Vici.Core.PCL">
+      <HintPath>..\..\..\References\Vici.Core.PCL.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
+  <ProjectExtensions />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

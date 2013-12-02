@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CACF1024-EC84-4601-A4F7-4203320870DC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Vici.CoolStorage</RootNamespace>
+    <AssemblyName>Vici.CoolStorage.NET</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Vici.Core">
+      <HintPath>..\References\Vici.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
+    <Compile Include="Source\Attributes\BooleanValueAttribute.cs" />
+    <Compile Include="Source\Attributes\ClientGeneratedAttribute.cs" />
+    <Compile Include="Source\Attributes\DefaultSortAttribute.cs" />
+    <Compile Include="Source\Attributes\DefaultSortExpressionAttribute.cs" />
+    <Compile Include="Source\Attributes\IdentityAttribute.cs" />
+    <Compile Include="Source\Attributes\LazyAttribute.cs" />
+    <Compile Include="Source\Attributes\ManyToManyAttribute.cs" />
+    <Compile Include="Source\Attributes\ManyToOneAttribute.cs" />
+    <Compile Include="Source\Attributes\MapToAttribute.cs" />
+    <Compile Include="Source\Attributes\NoCreateAttribute.cs" />
+    <Compile Include="Source\Attributes\NotMappedAttribute.cs" />
+    <Compile Include="Source\Attributes\NullValueAttribute.cs" />
+    <Compile Include="Source\Attributes\OneToManyAttribute.cs" />
+    <Compile Include="Source\Attributes\OneToOneAttribute.cs" />
+    <Compile Include="Source\Attributes\OptimisticLockAttribute.cs" />
+    <Compile Include="Source\Attributes\PrefetchAttribute.cs" />
+    <Compile Include="Source\Attributes\QueryExpressionAttribute.cs" />
+    <Compile Include="Source\Attributes\RelationAttribute.cs" />
+    <Compile Include="Source\Attributes\SequenceAttribute.cs" />
+    <Compile Include="Source\Attributes\ServerGeneratedAttribute.cs" />
+    <Compile Include="Source\Attributes\SoftDeleteAttribute.cs" />
+    <Compile Include="Source\Attributes\ToStringAttribute.cs" />
+    <Compile Include="Source\Attributes\TrimAttribute.cs" />
+    <Compile Include="Source\CSAggregate.cs" />
+    <Compile Include="Source\CSConfig.cs" />
+    <Compile Include="Source\CSConfigSection.cs" />
+    <Compile Include="Source\CSDatabase.cs" />
+    <Compile Include="Source\CSDataProvider.cs" />
+    <Compile Include="Source\CSException.cs" />
+    <Compile Include="Source\CSExpressionParser.cs" />
+    <Compile Include="Source\CSFactory.cs" />
+    <Compile Include="Source\CSFieldValue.cs" />
+    <Compile Include="Source\CSFieldValueCollection.cs" />
+    <Compile Include="Source\CSFilter.cs" />
+    <Compile Include="Source\CSHelper.cs" />
+    <Compile Include="Source\CSJoin.cs" />
+    <Compile Include="Source\CSJoinList.cs" />
+    <Compile Include="Source\CSList.cs" />
+    <Compile Include="Source\CSListGeneric.cs" />
+    <Compile Include="Source\CSNameGenerator.cs" />
+    <Compile Include="Source\CSObject.cs" />
+    <Compile Include="Source\CSObjectEventHandler.cs" />
+    <Compile Include="Source\CSObjectGeneric.cs" />
+    <Compile Include="Source\CSObjectStringConverter.cs" />
+    <Compile Include="Source\CSParameter.cs" />
+    <Compile Include="Source\CSParameterCollection.cs" />
+    <Compile Include="Source\CSRelation.cs" />
+    <Compile Include="Source\CSSchema.cs" />
+    <Compile Include="Source\CSSchemaColumn.cs" />
+    <Compile Include="Source\CSSchemaColumnCollection.cs" />
+    <Compile Include="Source\CSSchemaField.cs" />
+    <Compile Include="Source\CSSchemaFieldCollection.cs" />
+    <Compile Include="Source\CSSort.cs" />
+    <Compile Include="Source\CSStringCollection.cs" />
+    <Compile Include="Source\CSTable.cs" />
+    <Compile Include="Source\CSTransaction.cs" />
+    <Compile Include="Source\CSTypedQuery.cs" />
+    <Compile Include="Source\Drivers\CSDataProviderAccess.cs" />
+    <Compile Include="Source\Drivers\CSDataProviderSqlServer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Source\Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
